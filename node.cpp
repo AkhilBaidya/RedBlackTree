@@ -54,3 +54,24 @@ void node::setData(int input) {
 void node::setColor(char input) {
   color = input;
 }
+
+//Get functions:
+node* node::getParent() {
+  return parent;
+}
+
+node* node::getL() {
+  return left;
+}
+
+node* node::getR() {
+  return right;
+}
+
+int node::getData() {
+  return data;
+}
+
+char node::getColor() {
+  return color;
+}
