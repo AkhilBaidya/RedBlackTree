@@ -86,8 +86,25 @@ void print(node* head, int depth) {
     cout << "[" << head -> getColor() << ":" << head -> getData() << "]" << endl;
     return;
   }
-    
+
   //print right, current, then left recursively
+
+  if (head -> getR() != NULL) {
+    print(head -> getR(), depth + 1); //recurse right
+  }
+
+  //current node depth
+  for (int i = 0; i < depth; i++){
+      cout << "\t";
+    }
+
+  //current node value
+  cout << "[" << head -> getColor() << ":" << head -> getData() << "]" << endl;
+
+  if (head -> getL() != NULL) {
+    print(head -> getL(), depth + 1); //recurse left
+  }
+  return;
 }
 
 //The check function will reorganize the tree according to the 5 epic rules that govern a red black tree.
