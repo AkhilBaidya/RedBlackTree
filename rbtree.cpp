@@ -77,6 +77,16 @@ void add(node* head, node* input) {
 //The print function accesses the tree and prints it out recursively, as a sideways tree. It will print out the color of each node as well as the node value.
 void print(node* head, int depth) {
   //at end of tree, print current with depth
+  if (head -> getR() == NULL && head -> getL() == NULL) {
+    //depth
+    for (int i = 0; i < depth; i++){
+      cout << "\t";
+    }
+    //value
+    cout << "[" << head -> getColor() << ":" << head -> getData() << "]" << endl;
+    return;
+  }
+    
   //print right, current, then left recursively
 }
 
