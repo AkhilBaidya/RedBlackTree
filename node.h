@@ -37,4 +37,10 @@ class node {
   char getcolor();
   
  private:
+  //Values:
+  node* parent;
+  node* left;
+  node* right;
+  int data;
+  char color;
 };
