@@ -20,7 +20,7 @@ using namespace std;
 
 //Function Prototypes:
 void add(node*, node*);
-void print(node*);
+void print(node*, int);
 void check(node*);
 
 /*In this main function, the user will be able to input commands to edit the Red Black Tree (adding values to it and printing it)*/
@@ -41,7 +41,14 @@ int main() {
     }
 
     else if (!strcmp(command, "PRINT")) {
+      if (head == NULL) {
+	cout << "There is no tree ~ <3" << endl
+      }
 
+      else {
+	cout << "Here's the tree:" << endl;
+	print(head, 0);
+      }
     }
     
     else if (!strcmp(command, "QUIT")) {
@@ -68,8 +75,9 @@ void add(node* head, node* input) {
 }
 
 //The print function accesses the tree and prints it out recursively, as a sideways tree. It will print out the color of each node as well as the node value.
-void print(node* head) {
-
+void print(node* head, int depth) {
+  //at end of tree, print current with depth
+  //print right, current, then left recursively
 }
 
 //The check function will reorganize the tree according to the 5 epic rules that govern a red black tree.
