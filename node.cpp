@@ -33,3 +33,24 @@ node::~node() {
   delete left;
   delete right;
 }
+
+//Set functions:
+void node::setParent(node* input) {
+  parent = input;
+}
+
+void node::setL(node* input) {
+  left = input;
+}
+
+void node::setR(node* input) {
+  right = input;
+}
+
+void node::setData(int input) {
+  data = input;
+}
+
+void node::setColor(char input) {
+  color = input;
+}
