@@ -40,7 +40,7 @@ int main() {
     else {
       cout << "Didn't understand that." << endl;
       cout << "_          _" << endl;
-      cout << " \_(0_0)?_/" << endl;
+      cout << " |_(0_0)?_|" << endl;
     }
 
   return 0;
