@@ -7,5 +7,21 @@
 #include <cstring>
 #include "node.h"
 
+/*Functions will be add, print, delete, and reorder*/
+
+class rbtree {
+
+public:
+  rbtree(); //constructor
+  ~rbtree(); //destructor
+
+  void add(int);
+  void print();
+  void del(int);
+  
+private:
+  node* head;
+  void reorder();
+};
 
 #endif
