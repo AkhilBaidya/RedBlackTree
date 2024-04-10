@@ -72,11 +72,11 @@ void check(node*);
 }
 */
 
-rbtree:rbtree() { //constructor
+rbtree::rbtree() { //constructor
   head = NULL;
 }
 
-rbtree:~rbtree() { //destructor
+rbtree::~rbtree() { //destructor
 }
 
 //The add function accesses the tree and adds an input to it in the fashion of a binary tree (going down to the right if larger and down to the left if smaller or equal to). The input is added as a leaf to the tree, initially.
@@ -121,7 +121,7 @@ void rbtree::print() {
   return;
 }
 
-void rbtree::del(){
+void rbtree::del(int input){
   return;
 }
 
@@ -141,7 +141,7 @@ void rbtree::recPrint(node* input, int depth) {
   //print right, current, then left recursively
 
   if (input -> getR() != NULL) {
-    print(input -> getR(), depth + 1); //recurse right
+    recPrint(input -> getR(), depth + 1); //recurse right
   }
 
   //current node depth
@@ -153,13 +153,13 @@ void rbtree::recPrint(node* input, int depth) {
   cout << "[" << input -> getColor() << ":" << input -> getData() << "]" << endl;
 
   if (input -> getL() != NULL) {
-    print(input -> getL(), depth + 1); //recurse left
+    recPrint(input -> getL(), depth + 1); //recurse left
   }
   return;
 }
 
 //The reorder function will reorganize the tree according to the 5 epic rules that govern a red black tree.
 void rbtree::reorder(node* head) {
-
+  
 }
 
