@@ -72,17 +72,48 @@ void check(node*);
 }
 */
 
+rbtree:rbtree() { //constructor
+  head = NULL;
+}
+
+rbtree:~rbtree() { //destructor
+}
+
 //The add function accesses the tree and adds an input to it in the fashion of a binary tree (going down to the right if larger and down to the left if smaller or equal to). The input is added as a leaf to the tree, initially.
 void rbtree::add(int input) {
   node* current = head;
+  node* previous = head;
+  
   node* toAdd = new node(input);
-  while (current != NULL) {
 
-    if (input <= current -> getData()) {
-      current = current -> getL();
+  if (current == NULL) { //case of null head
+    head = toAdd;
+  }
+  
+  else {
+    while (current != NULL) { //find parent of place to add
+
+      previous = current;
+      
+      if (input <= current -> getData()) {
+	current = current -> getL();
+      }
+
+      else if (input > current-> getData()) {
+	current = current -> getR();
+      }
     }
     
+    if (input > previous -> getData()) { //add the new node
+      previous -> setR(toAdd);
+    }
+
+    else if (input <= previous -> getData()) {
+      previous -> setL(toAdd);
+    }
   }
+
+  return;
 }
 
 void rbtree::print() {
