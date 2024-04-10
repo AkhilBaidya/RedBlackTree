@@ -1,8 +1,12 @@
+#ifndef NODE_H
+#define NODE_H
+
 //C++ Data Structures: Node Class Header File - Akhil Baidya
 //Submission Deadline: 3/22/2024
 /*
 Notes: The Node Class will have a pointer to its parent and to its left and right children. It will also contain integer data and a color. 
 There will be get and set functions for all of these values, on top of a constructor and destructor.
+Header guards from https://www.learncpp.com/cpp-tutorial/header-guards/
 */
 
 
@@ -44,3 +48,5 @@ class node {
   int data;
   char color;
 };
+
+#endif
