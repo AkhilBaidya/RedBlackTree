@@ -21,7 +21,8 @@ public:
   
 private:
   node* head;
-  void reorder();
+  void reorder(node*);
+  void recPrint(node*);
 };
 
 #endif
