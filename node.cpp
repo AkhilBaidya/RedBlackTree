@@ -35,7 +35,7 @@ node::~node() {
 }
 
 //Set functions:
-void node::setParent(node* input) {
+void node::setPar(node* input) {
   parent = input;
 }
 
@@ -56,7 +56,7 @@ void node::setColor(char input) {
 }
 
 //Get functions:
-node* node::getParent() {
+node* node::getPar() {
   return parent;
 }
 
