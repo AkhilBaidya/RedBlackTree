@@ -14,17 +14,19 @@ Here are the values that govern a Red Black Tree (taken from Canvas):
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include "node.h"
+#include "rbtree.h"
 
 using namespace std;
 
+/*
 //Function Prototypes:
 void add(node*, node*);
 void print(node*, int);
 void check(node*);
+*/
 
 /*In this main function, the user will be able to input commands to edit the Red Black Tree (adding values to it and printing it)*/
-int main() {
+/*int main() {
 
   node* head = new node();
   head = NULL; //initial head of tree
@@ -68,29 +70,39 @@ int main() {
   
   return 0;
 }
+*/
 
 //The add function accesses the tree and adds an input to it in the fashion of a binary tree (going down to the right if larger and down to the left if smaller or equal to). The input is added as a leaf to the tree, initially.
-void add(node* head, node* input) {
+void rbtree::add(int input) {
 
 }
 
+void rbtree::print() {
+  recPrint(head, 0);
+  return;
+}
+
+void rbtree::del(){
+  return;
+}
+
 //The print function accesses the tree and prints it out recursively, as a sideways tree. It will print out the color of each node as well as the node value.
-void print(node* head, int depth) {
+void rbtree::recPrint(node* input, int depth) {
   //at end of tree, print current with depth
-  if (head -> getR() == NULL && head -> getL() == NULL) {
+  if (input -> getR() == NULL && input -> getL() == NULL) {
     //depth
     for (int i = 0; i < depth; i++){
       cout << "\t";
     }
     //value
-    cout << "[" << head -> getColor() << ":" << head -> getData() << "]" << endl;
+    cout << "[" << input -> getColor() << ":" << input -> getData() << "]" << endl;
     return;
   }
 
   //print right, current, then left recursively
 
-  if (head -> getR() != NULL) {
-    print(head -> getR(), depth + 1); //recurse right
+  if (input -> getR() != NULL) {
+    print(input -> getR(), depth + 1); //recurse right
   }
 
   //current node depth
@@ -99,15 +111,16 @@ void print(node* head, int depth) {
     }
 
   //current node value
-  cout << "[" << head -> getColor() << ":" << head -> getData() << "]" << endl;
+  cout << "[" << input -> getColor() << ":" << input -> getData() << "]" << endl;
 
-  if (head -> getL() != NULL) {
-    print(head -> getL(), depth + 1); //recurse left
+  if (input -> getL() != NULL) {
+    print(input -> getL(), depth + 1); //recurse left
   }
   return;
 }
 
-//The check function will reorganize the tree according to the 5 epic rules that govern a red black tree.
-void check(node* head) {
+//The reorder function will reorganize the tree according to the 5 epic rules that govern a red black tree.
+void rbtree::reorder(node* head) {
 
 }
+
