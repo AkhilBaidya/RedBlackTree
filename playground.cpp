@@ -7,8 +7,7 @@ using namespace std;
 int main() {
 
   //Code from previous version of rbtree.cpp (just copied it over and will edit it)
-  node* head = new node();
-  head = NULL; //initial head of tree
+  rbtree* tree = new rbtree();
 
   bool editing = true; //loops the command input process
   char command[15]; //user command
@@ -19,17 +18,18 @@ int main() {
     cin >> command;
 
     if (!strcmp(command, "ADD")) {
+      tree -> add(5);
     }
 
     else if (!strcmp(command, "PRINT")) {
-      if (head == NULL) {
-        cout << "There is no tree ~ <3" << endl
-      }
+      //if (head == NULL) {
+      //cout << "There is no tree ~ <3" << endl
+      //}
 
-      else {
+      //else {
         cout << "Here's the tree:" << endl;
-        print(head, 0);
-      }
+        tree -> print();
+	//}
     }
 
     else if (!strcmp(command, "QUIT")) {
@@ -44,4 +44,5 @@ int main() {
     }
 
   return 0;
+}
 }
