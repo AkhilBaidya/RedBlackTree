@@ -38,7 +38,7 @@ class node {
   node* getL();
   node* getR();
   int getData();
-  char getcolor();
+  char getColor();
   
  private:
   //Values:
