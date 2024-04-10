@@ -22,7 +22,7 @@ public:
 private:
   node* head;
   void reorder(node*);
-  void recPrint(node*);
+  void recPrint(node*, int);
 };
 
 #endif
