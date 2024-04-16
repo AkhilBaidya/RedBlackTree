@@ -19,6 +19,7 @@ int main() {
 
     if (!strcmp(command, "ADD")) {
       tree -> add(5);
+      cout << "added" << endl;
     }
 
     else if (!strcmp(command, "PRINT")) {
@@ -42,7 +43,6 @@ int main() {
       cout << "_          _" << endl;
       cout << " |_(0_0)?_|" << endl;
     }
-
+  }
   return 0;
-}
 }
