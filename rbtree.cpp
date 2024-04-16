@@ -169,15 +169,30 @@ void rbtree::reorder1(node* input) {
   
   //Big Case 1: The Parent's Sibling is Red
 
-  //If current node's parent if parent is not null is left node of grandparent - if grandparents right child is not null and red:
+  if (input -> getPar() == NULL) {
+    return;
+  }
 
+  if (input -> getPar() -> getPar() == NULL) {
+    return;
+  } //return statements for this recursive function
+
+  //If current node's parent if parent is not null is left node of grandparent - if grandparents right child is not null and red:
+  
   if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
 
     if (input -> getPar() == input -> getPar() -> getPar() -> getL()) { 
 
       if (input -> getPar() -> getPar() -> getR() != NULL && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
 	//Be adding the node as red! Then Change parent and parent's sibling to black and grandparent to red
+
+
+	input -> getPar() -> setColor('B');
+	input -> getPar() -> getPar() -> getR() -> setColor('B');
+	input -> getPar() -> getPar() -> setColor('R');
+       
 	//Recursively do this on grandparent
+	reorder1(input -> getPar() -> getPar());
       }
       
     }
@@ -187,7 +202,13 @@ void rbtree::reorder1(node* input) {
     else if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
 
       if (input -> getPar() -> getPar() -> getL() != NULL && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
-
+	
+	input -> getPar() -> setColor('B');
+	input -> getPar() -> getPar() -> getL() -> setColor('B');
+	input -> getPar() -> getPar() -> setColor('R');
+       
+	//Recursively do this on grandparent
+	reorder1(input -> getPar() -> getPar());
       }
       
     }
