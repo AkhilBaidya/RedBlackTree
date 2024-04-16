@@ -219,7 +219,9 @@ void rbtree::reorder2(node* input) {
 
   //Big Case 2: The Parent's Sibling is Black or NULL
 
-  //If that is true:
+  if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
+
+    //If that is true:
 
   //Do LL is node is LL to grandparent:
   //Recolor
@@ -230,6 +232,7 @@ void rbtree::reorder2(node* input) {
   //Do RL if node is RL to grandparent:
 
   //Do RR if node is RR to grandparent:
+  }
 
 }
 
