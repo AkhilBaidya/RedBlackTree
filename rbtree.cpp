@@ -261,13 +261,14 @@ void rbtree::rotLL(node* input) {
   
   //Grand = saved color
   g -> setColor(save);
-  
+
+  return;
 }
 
 void rbtree::rotLR(node* input) {
   //same notation as above
   node* c = input;
-  node* cSib = input -> getPar() -> getR();
+  node* cSib = input -> getPar() -> getL();
   node* cL = input -> getL();
   node* cR = input -> getR();
   node* p = input -> getPar();
@@ -285,16 +286,18 @@ void rbtree::rotLR(node* input) {
   
   //LL on Parent
   rotLL(p);
+
+  return;
 }
 
 void rbtree::rotRR(node* input) {
   //same notation as above
   node* c = input;
-  node* cSib = input -> getPar() -> getR();
+  node* cSib = input -> getPar() -> getL();
   node* cL = input -> getL();
   node* cR = input -> getR();
   node* p = input -> getPar();
-  node* pSib = input -> getPar() -> getPar() -> getR();
+  node* pSib = input -> getPar() -> getPar() -> getL();
   node* g = input -> getPar() -> getPar();
 
   //Grandpar pntr to Par (its right) = CurSib (left of parent)
@@ -314,13 +317,32 @@ void rbtree::rotRR(node* input) {
   
   //Grand = saved color
   g -> setColor(save);
+
+  return;
 }
 
 void rbtree::rotRL(node* input) {
+  node* c = input;
+  node* cSib = input -> getPar() -> getR();
+  node* cL = input -> getL();
+  node* cR = input -> getR();
+  node* p = input -> getPar();
+  node* pSib = input -> getPar() -> getPar() -> getL();
+  node* g = input -> getPar() -> getPar();
+  
   //Grand pntr to Par (its right) = Cur
+  g -> setR(c);
+ 
   //Par pntr to Cur (its left) = CurR
+  p -> setL(cR);
+  
   //Cur pntr to CurR = Par
+  c -> setR(p);
+  
   //RR on Parent
+  rotRR(p);
+
+  return;
 }
 
 
