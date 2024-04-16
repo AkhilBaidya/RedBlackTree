@@ -171,12 +171,27 @@ void rbtree::reorder1(node* input) {
 
   //If current node's parent if parent is not null is left node of grandparent - if grandparents right child is not null and red:
 
-  //Be adding the node as red! Then Change parent and parent's sibling to black and grandparent to red
-  //Recursively do this on grandparent
-  
-  //If current node's parent if parent is not null is right node of grandparent - if grandparent's left child is not null and red:
+  if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
 
-  //Same
+    if (input -> getPar() == input -> getPar() -> getPar() -> getL()) { 
+
+      if (input -> getPar() -> getPar() -> getR() != NULL && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
+	//Be adding the node as red! Then Change parent and parent's sibling to black and grandparent to red
+	//Recursively do this on grandparent
+      }
+      
+    }
+
+    //If current node's parent if parent is not null is right node of grandparent - if grandparent's left child is not null and red:
+
+    else if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
+
+      if (input -> getPar() -> getPar() -> getL() != NULL && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
+
+      }
+      
+    }
+  }
 }
 
 void rbtree::reorder2(node* input) {
