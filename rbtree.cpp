@@ -88,6 +88,7 @@ void rbtree::add(int input) {
 
   if (current == NULL) { //case of null head
     head = toAdd;
+    head -> setColor('B'); //when adding to root 
   }
   
   else {
@@ -117,7 +118,9 @@ void rbtree::add(int input) {
 }
 
 void rbtree::print() {
-  recPrint(head, 0);
+  if (head != NULL) {
+    recPrint(head,0);
+  }
   return;
 }
 
@@ -158,8 +161,37 @@ void rbtree::recPrint(node* input, int depth) {
   return;
 }
 
-//The reorder function will reorganize the tree according to the 5 epic rules that govern a red black tree.
-void rbtree::reorder(node* head) {
+//The reorder functions will reorganize the tree according to the 5 epic rules that govern a red black tree.
+void rbtree::reorder1(node* input) {
+
+  //This source helped me understand the two main cases for tree insertion:
+  //https://www.geeksforgeeks.org/insertion-in-red-black-tree/
+  
+  //Big Case 1: The Parent's Sibling is Red
   
 }
+
+void rbtree::reorder2(node* input) {
+
+  //Big Case 2: The Parent's Sibling is Black or NULL
+
+}
+
+void rbtree::rotLL(node* input) {
+
+}
+
+void rbtree::rotLR(node* input) {
+
+}
+
+void rbtree::rotRL(node* input) {
+
+}
+
+void rbtree::rotRR(node* input) {
+
+}
+
+
 
