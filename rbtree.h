@@ -21,7 +21,12 @@ public:
   
 private:
   node* head;
-  void reorder(node*);
+  void reorder1(node*); //parent's sibling is red
+  void reorder2(node*); //parent's sibling is black or NULL
+  void rotLL(node*); //rotations
+  void rotLR(node*);
+  void rotRL(node*);
+  void rotRR(node*);
   void recPrint(node*, int);
 };
 
