@@ -209,10 +209,10 @@ void rbtree::reorder1(node* input) {
        
 	//Recursively do this on grandparent
 	reorder1(input -> getPar() -> getPar());
-      }
-      
+      }      
     }
   }
+  return;
 }
 
 void rbtree::reorder2(node* input) {
@@ -235,15 +235,32 @@ void rbtree::reorder2(node* input) {
 
 void rbtree::rotLL(node* input) {
 
+  node* c = input;
+  node* cSib = input -> getPar() -> getR();
+  node* cL = input -> getL();
+  node* cR = input -> getR();
+  node* p = input -> getPar();
+  node* pSib = input -> getPar() -> getPar() -> getR();
+  node* g = input -> getPar() -> getPar();
   //Cur, CurSib, CurL, CurR, Par, ParSib, ParSibL, ParSibR, Grandpar
 
   //Grandpar pntr to Par (its left) = CurSib (right of parent)
+  g -> setL(cSib);
+  
   //Par pntr to CurSib (right pntr) = Grand
-
+  p -> setR(g);
+  
   //Par pntr to grand is null
+  p -> setPar(NULL);
+  
   //Save color of Par
+  char save = p -> getColor();
+  
   //Par = Grand color
+  p -> setColor(g -> getColor());
+  
   //Grand = saved color
+  g -> setColor(save);
   
 }
 
