@@ -168,29 +168,76 @@ void rbtree::reorder1(node* input) {
   //https://www.geeksforgeeks.org/insertion-in-red-black-tree/
   
   //Big Case 1: The Parent's Sibling is Red
+
+  //If current node's parent if parent is not null is left node of grandparent - if grandparents right child is not null and red:
+
+  //Be adding the node as red! Then Change parent and parent's sibling to black and grandparent to red
+  //Recursively do this on grandparent
   
+  //If current node's parent if parent is not null is right node of grandparent - if grandparent's left child is not null and red:
+
+  //Same
 }
 
 void rbtree::reorder2(node* input) {
 
   //Big Case 2: The Parent's Sibling is Black or NULL
 
+  //If that is true:
+
+  //Do LL is node is LL to grandparent:
+  //Recolor
+  
+  //Do LR if node is LR to grandparent:
+  //Recolor
+  
+  //Do RL if node is RL to grandparent:
+
+  //Do RR if node is RR to grandparent:
+
 }
 
 void rbtree::rotLL(node* input) {
 
+  //Cur, CurSib, CurL, CurR, Par, ParSib, ParSibL, ParSibR, Grandpar
+
+  //Grandpar pntr to Par (its left) = CurSib (right of parent)
+  //Par pntr to CurSib (right pntr) = Grand
+
+  //Par pntr to grand is null
+  //Save color of Par
+  //Par = Grand color
+  //Grand = saved color
+  
 }
 
 void rbtree::rotLR(node* input) {
+  //same notation as above
 
-}
+  //Grand pntr to Par (its left) = Cur
+  //Par pntr to Cur (its right) = CurL
+  //Cur pntr to CurL = Par
 
-void rbtree::rotRL(node* input) {
-
+  //LL on Parent
 }
 
 void rbtree::rotRR(node* input) {
+  //same notation as above
 
+   //Grandpar pntr to Par (its right) = CurSib (left of parent)
+  //Par pntr to CurSib (left pntr) = Grand
+  //Par pntr to Grand = null
+
+  //Save color of Par
+  //Par = Grand color
+  //Grand = saved color
+}
+
+void rbtree::rotRL(node* input) {
+  //Grand pntr to Par (its right) = Cur
+  //Par pntr to Cur (its left) = CurR
+  //Cur pntr to CurR = Par
+  //RR on Parent
 }
 
 
