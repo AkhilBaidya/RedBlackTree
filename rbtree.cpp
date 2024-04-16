@@ -266,12 +266,25 @@ void rbtree::rotLL(node* input) {
 
 void rbtree::rotLR(node* input) {
   //same notation as above
-
+  node* c = input;
+  node* cSib = input -> getPar() -> getR();
+  node* cL = input -> getL();
+  node* cR = input -> getR();
+  node* p = input -> getPar();
+  node* pSib = input -> getPar() -> getPar() -> getR();
+  node* g = input -> getPar() -> getPar();
+  
   //Grand pntr to Par (its left) = Cur
+  g -> setL(c);
+  
   //Par pntr to Cur (its right) = CurL
+  p -> setR(cL);
+  
   //Cur pntr to CurL = Par
-
+  c -> setL(p);
+  
   //LL on Parent
+  rotLL(p);
 }
 
 void rbtree::rotRR(node* input) {
