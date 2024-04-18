@@ -18,7 +18,9 @@ int main() {
     cin >> command;
 
     if (!strcmp(command, "ADD")) {
-      tree -> add(5);
+      int toAdd;
+      cin >> toAdd;
+      tree -> add(toAdd);
       cout << "added" << endl;
     }
 
