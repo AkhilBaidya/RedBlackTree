@@ -115,7 +115,7 @@ void rbtree::add(int input) {
   }
 
   reorder2(toAdd);
-  else if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getPar() != NULL) {
+  if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getPar() != NULL) {
     if (toAdd -> getPar() == toAdd -> getPar() -> getPar() -> getL() && toAdd -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
       reorder1(toAdd);
     }
@@ -248,7 +248,7 @@ void rbtree::reorder2(node* input) {
       }
     }
     if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
-      if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor == 'B') {
+      if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor() == 'B') {
 	if (input == input -> getPar() -> getL()) { 
 	//Do RL if node is RL to grandparent:
 	  rotRL(input);
