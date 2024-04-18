@@ -107,14 +107,17 @@ void rbtree::add(int input) {
     
     if (input > previous -> getData()) { //add the new node
       previous -> setR(toAdd);
+      toAdd -> setPar(previous);
     }
 
     else if (input <= previous -> getData()) {
       previous -> setL(toAdd);
+      toAdd -> setPar(previous);
     }
   }
 
   reorder2(toAdd);
+  cout << "did a B-uncle reorder" << endl;
   if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getPar() != NULL) {
     if (toAdd -> getPar() == toAdd -> getPar() -> getPar() -> getL() && toAdd -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
       reorder1(toAdd);
@@ -123,8 +126,11 @@ void rbtree::add(int input) {
     else if (toAdd -> getPar() == toAdd -> getPar() -> getPar() -> getR() && toAdd -> getPar() -> getPar() -> getL() -> getColor() == 'R'){
       reorder1(toAdd);
     }
+    cout << "did a R-uncle reorder" << endl;
   }
-  
+
+  cout << "current tree: " << endl;
+  print();
   return;
 }
 
@@ -231,30 +237,39 @@ void rbtree::reorder2(node* input) {
   //Big Case 2: The Parent's Sibling is Black or NULL
 
   if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
-
+    cout << "stage 1" << endl;
+    
     //If that is true:
     if (input -> getPar() == input -> getPar() -> getPar() -> getL()) {
+      cout << "par is l" << endl;
       if (input -> getPar() -> getPar() -> getR() == NULL || input -> getPar() -> getPar() -> getR() -> getColor() == 'B') {
+	cout << "right uncle" << endl;
 	if (input == input -> getPar() -> getL()) {
 	//Do LL is node is LL to grandparent:
+	  cout << "calling LL" << endl;
 	  rotLL(input);
 	  //Recolor
 	}
 	if (input == input -> getPar() -> getR()) {
 	//Do LR if node is LR to grandparent:
+	  cout << "calling LR" << endl;
 	  rotLR(input);
 	//Recolor
 	}
       }
     }
     if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
+      cout << "par is r" << endl;
       if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor() == 'B') {
+	cout << "right uncle" << endl;
 	if (input == input -> getPar() -> getL()) { 
 	//Do RL if node is RL to grandparent:
+	  cout << "calling RL" << endl;
 	  rotRL(input);
 	}
 	if (input == input -> getPar() -> getR()) {
 	//Do RR if node is RR to grandparent:
+	  cout << "calling RR" << endl;
 	  rotRR(input);
 	}
       }
