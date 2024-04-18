@@ -222,18 +222,29 @@ void rbtree::reorder2(node* input) {
   if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
 
     //If that is true:
-
-  //Do LL is node is LL to grandparent:
-  //Recolor
-  
-  //Do LR if node is LR to grandparent:
-  //Recolor
-  
-  //Do RL if node is RL to grandparent:
-
-  //Do RR if node is RR to grandparent:
+    if (input -> getPar() == input -> getPar() -> getPar() -> getL()) {
+      if (input -> getPar() -> getPar() -> getR() == NULL || input -> getPar() -> getPar() -> getR() -> getColor() == 'B') {
+	if (input == input -> getPar() -> getL()) {
+	//Do LL is node is LL to grandparent:
+	//Recolor
+	}
+	if (input == input -> getPar() -> getR()) {
+	//Do LR if node is LR to grandparent:
+	//Recolor
+	}
+      }
+    }
+    if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
+      if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor == 'B') {
+	if (input == input -> getPar() -> getL()) { 
+	//Do RL if node is RL to grandparent:
+	}
+	if (input == input -> getPar() -> getR()) {
+	//Do RR if node is RR to grandparent:
+	}
+      }
+    }
   }
-
 }
 
 void rbtree::rotLL(node* input) {
