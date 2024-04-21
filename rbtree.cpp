@@ -130,6 +130,11 @@ void rbtree::add(int input) {
   }
 
   cout << "current tree: " << endl;
+   
+  if (head -> getColor() == 'R') { //the root must always be black!
+    head -> setColor('B');
+  }
+
   print();
   return;
 }
@@ -286,6 +291,8 @@ void rbtree::rotLL(node* input) {
   node* p = input -> getPar();
   node* pSib = input -> getPar() -> getPar() -> getR();
   node* g = input -> getPar() -> getPar();
+  node* gp = g -> getPar();
+  
   //Cur, CurSib, CurL, CurR, Par, ParSib, ParSibL, ParSibR, Grandpar
 
   //Grandpar pntr to Par (its left) = CurSib (right of parent)
@@ -293,9 +300,28 @@ void rbtree::rotLL(node* input) {
   
   //Par pntr to CurSib (right pntr) = Grand
   p -> setR(g);
+
+  //if grandparent was the original head
+  if (g -> getPar() == NULL) {
+    head = p;
+    p -> setPar(NULL);
+    g -> setPar(p);
+  }
+
+  //if not:
+  else {
+    if (gp -> getL() == g) {
+      gp -> setL(p);
+    }
+    else if (gp -> getR() == g) {
+      gp -> setR(p);
+    }
+    p -> setPar(gp);
+    g -> setPar(p);
+  }
   
   //Par pntr to grand is null
-  p -> setPar(NULL);
+  //p -> setPar(NULL);
   
   //Save color of Par
   char save = p -> getColor();
@@ -305,6 +331,7 @@ void rbtree::rotLL(node* input) {
   
   //Grand = saved color
   g -> setColor(save);
+
 
   return;
 }
@@ -343,15 +370,36 @@ void rbtree::rotRR(node* input) {
   node* p = input -> getPar();
   node* pSib = input -> getPar() -> getPar() -> getL();
   node* g = input -> getPar() -> getPar();
-
+  node* gp = g -> getPar();
+  
   //Grandpar pntr to Par (its right) = CurSib (left of parent)
   g -> setR(cSib);
   
   //Par pntr to CurSib (left pntr) = Grand
   p -> setL(g);
+
+  
+  //if grandparent was the original head
+  if (g -> getPar() == NULL) {
+    head = p;
+    p -> setPar(NULL);
+    g -> setPar(p);
+  }
+
+  //if not:
+  else {
+    if (gp -> getL() == g) {
+      gp -> setL(p);
+    }
+    else if (gp -> getR() == g) {
+      gp -> setR(p);
+    }
+    p -> setPar(gp);
+    g -> setPar(p);
+  }
   
   //Par pntr to Grand = null
-  p -> setPar(NULL);
+  //p -> setPar(NULL);
   
   //Save color of Par
   char save = p -> getColor();
