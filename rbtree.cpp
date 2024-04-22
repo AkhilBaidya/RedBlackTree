@@ -18,60 +18,6 @@ Here are the values that govern a Red Black Tree (taken from Canvas):
 
 using namespace std;
 
-/*
-//Function Prototypes:
-void add(node*, node*);
-void print(node*, int);
-void check(node*);
-*/
-
-/*In this main function, the user will be able to input commands to edit the Red Black Tree (adding values to it and printing it)*/
-/*int main() {
-
-  node* head = new node();
-  head = NULL; //initial head of tree
-
-  bool editing = true; //loops the command input process
-  char command[15]; //user command
-
-  while (editing) {
-
-    cout << "What would you like to do? ADD to tree? PRINT tree? QUIT?" << endl;
-    cin >> command;
-
-    if (!strcmp(command, "ADD")) {
-    }
-
-    else if (!strcmp(command, "PRINT")) {
-      if (head == NULL) {
-	cout << "There is no tree ~ <3" << endl
-      }
-
-      else {
-	cout << "Here's the tree:" << endl;
-	print(head, 0);
-      }
-    }
-    
-    else if (!strcmp(command, "QUIT")) {
-      editing = false;
-      cout << "Quitting..." << endl;
-    }
-
-    else {
-      cout << "Didn't understand that." << endl;
-      cout << "_          _" << endl;
-      cout << " \_(0_0)?_/" << endl;
-    }
-    
-  }
-
-  cout << "Thank you for witnessing this Red Black Tree program!" << endl;
-  
-  return 0;
-}
-*/
-
 rbtree::rbtree() { //constructor
   head = NULL;
 }
@@ -116,7 +62,9 @@ void rbtree::add(int input) {
     }
   }
 
-  reorder2(toAdd);
+  if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getColor() != 'B') {
+    reorder2(toAdd); //parent must not be black for the rotations cases
+  
   cout << "did a B-uncle reorder" << endl;
   if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getPar() != NULL) {
     if (toAdd -> getPar() == toAdd -> getPar() -> getPar() -> getL() && toAdd -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
@@ -128,13 +76,22 @@ void rbtree::add(int input) {
     }
     cout << "did a R-uncle reorder" << endl;
   }
+  }
 
   cout << "current tree: " << endl;
-   
+
+  if (head == NULL) {
+    cout << "erasure" << endl;
+  }
+  
   if (head -> getColor() == 'R') { //the root must always be black!
     head -> setColor('B');
   }
 
+  if (head == NULL) {
+    cout << "woah there" << endl;
+  }
+  cout << "overhere" << endl;
   print();
   return;
 }
@@ -255,7 +212,7 @@ void rbtree::reorder2(node* input) {
 	  rotLL(input);
 	  //Recolor
 	}
-	if (input == input -> getPar() -> getR()) {
+	else if (input == input -> getPar() -> getR()) {
 	//Do LR if node is LR to grandparent:
 	  cout << "calling LR" << endl;
 	  rotLR(input);
@@ -272,7 +229,7 @@ void rbtree::reorder2(node* input) {
 	  cout << "calling RL" << endl;
 	  rotRL(input);
 	}
-	if (input == input -> getPar() -> getR()) {
+	else if (input == input -> getPar() -> getR()) {
 	//Do RR if node is RR to grandparent:
 	  cout << "calling RR" << endl;
 	  rotRR(input);
@@ -297,6 +254,9 @@ void rbtree::rotLL(node* input) {
 
   //Grandpar pntr to Par (its left) = CurSib (right of parent)
   g -> setL(cSib);
+  if (cSib != NULL) {
+    cSib -> setPar(g);
+  }
   
   //Par pntr to CurSib (right pntr) = Grand
   p -> setR(g);
@@ -348,13 +308,21 @@ void rbtree::rotLR(node* input) {
   
   //Grand pntr to Par (its left) = Cur
   g -> setL(c);
+  c -> setPar(g);
   
   //Par pntr to Cur (its right) = CurL
   p -> setR(cL);
+  if (cL != NULL) {
+    cL -> setPar(p);
+    }
   
   //Cur pntr to CurL = Par
   c -> setL(p);
-  
+  p -> setPar(c);
+
+  if (head == g) {
+    head = c;
+  }
   //LL on Parent
   rotLL(p);
 
@@ -374,6 +342,9 @@ void rbtree::rotRR(node* input) {
   
   //Grandpar pntr to Par (its right) = CurSib (left of parent)
   g -> setR(cSib);
+  if (cSib != NULL) {
+    cSib -> setPar(g);
+  }
   
   //Par pntr to CurSib (left pntr) = Grand
   p -> setL(g);
@@ -416,23 +387,43 @@ void rbtree::rotRR(node* input) {
 void rbtree::rotRL(node* input) {
   node* c = input;
   node* cSib = input -> getPar() -> getR();
+  cout << "got csib" << endl;
   node* cL = input -> getL();
+  cout << "got left ch" << endl;
   node* cR = input -> getR();
+  cout << "got right ch" << endl;
   node* p = input -> getPar();
+  cout << "parent" << endl;
   node* pSib = input -> getPar() -> getPar() -> getL();
+  cout << "got uncle" << endl;
   node* g = input -> getPar() -> getPar();
+  cout << "got grandma" << endl;
   
   //Grand pntr to Par (its right) = Cur
   g -> setR(c);
+  c -> setPar(g);
+  cout << "set g right" << endl;
  
   //Par pntr to Cur (its left) = CurR
   p -> setL(cR);
+  if (cR != NULL) {
+    cR -> setPar(p);
+  }
+  cout << "p set left" << endl;
   
   //Cur pntr to CurR = Par
   c -> setR(p);
+  p -> setPar(c);
+  cout << "c set r" << endl;
+
+  if (head == g) {
+    head = c;
+  }
   
   //RR on Parent
+  cout << "rotating RR" << endl;
   rotRR(p);
+  cout << "did the other rotate" << endl;
 
   return;
 }
