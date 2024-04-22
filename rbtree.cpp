@@ -61,37 +61,8 @@ void rbtree::add(int input) {
       toAdd -> setPar(previous);
     }
   }
-
-  if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getColor() != 'B') {
-    reorder2(toAdd); //parent must not be black for the rotations cases
-  
-  cout << "did a B-uncle reorder" << endl;
-  if (toAdd -> getPar() != NULL && toAdd -> getPar() -> getPar() != NULL) {
-    if (toAdd -> getPar() == toAdd -> getPar() -> getPar() -> getL() && toAdd -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
-      reorder1(toAdd);
-    }
-
-    else if (toAdd -> getPar() == toAdd -> getPar() -> getPar() -> getR() && toAdd -> getPar() -> getPar() -> getL() -> getColor() == 'R'){
-      reorder1(toAdd);
-    }
-    cout << "did a R-uncle reorder" << endl;
-  }
-  }
-
-  cout << "current tree: " << endl;
-
-  if (head == NULL) {
-    cout << "erasure" << endl;
-  }
-  
-  if (head -> getColor() == 'R') { //the root must always be black!
-    head -> setColor('B');
-  }
-
-  if (head == NULL) {
-    cout << "woah there" << endl;
-  }
-  cout << "overhere" << endl;
+  reorder(toAdd);
+  cout << "current tree" << endl;
   print();
   return;
 }
@@ -140,6 +111,37 @@ void rbtree::recPrint(node* input, int depth) {
   return;
 }
 
+void rbtree::reorder(node* input) {
+  if (input -> getPar() != NULL && input -> getColor() == 'R' && input -> getPar() -> getColor() != 'B') {
+    reorder2(input); //parent must not be black for the rotations cases and for all cases the current thing looked at must be red
+    cout << "did a B-uncle reorder" << endl;
+
+    if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
+      if (input -> getPar() == input -> getPar() -> getPar() -> getL() && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
+	reorder1(input);
+    }
+
+      else if (input -> getPar() == input -> getPar() -> getPar() -> getR() && input -> getPar() -> getPar() -> getL() -> getColor() == 'R'){
+	reorder1(input);
+    }
+    cout << "did a R-uncle reorder" << endl;
+  }
+  }
+  
+  if (head == NULL) {
+    cout << "note: erasure" << endl;
+  }
+  
+  if (head -> getColor() == 'R') { //the root must always be black!
+    head -> setColor('B');
+  }
+
+  if (head == NULL) {
+    cout << "note: woah there. this shouldn't be printed out" << endl;
+  }
+  return;
+}
+
 //The reorder functions will reorganize the tree according to the 5 epic rules that govern a red black tree.
 void rbtree::reorder1(node* input) {
 
@@ -171,7 +173,7 @@ void rbtree::reorder1(node* input) {
 	input -> getPar() -> getPar() -> setColor('R');
        
 	//Recursively do this on grandparent
-	reorder1(input -> getPar() -> getPar());
+	reorder(input -> getPar() -> getPar());
       }
       
     }
@@ -186,8 +188,8 @@ void rbtree::reorder1(node* input) {
 	input -> getPar() -> getPar() -> getL() -> setColor('B');
 	input -> getPar() -> getPar() -> setColor('R');
        
-	//Recursively do this on grandparent
-	reorder1(input -> getPar() -> getPar());
+	//Recursively check grandparent
+	reorder(input -> getPar() -> getPar());
       }      
     }
   }
@@ -209,13 +211,16 @@ void rbtree::reorder2(node* input) {
 	if (input == input -> getPar() -> getL()) {
 	//Do LL is node is LL to grandparent:
 	  cout << "calling LL" << endl;
+	  node* p = input -> getPar();
 	  rotLL(input);
+	  reorder(p);
 	  //Recolor
 	}
 	else if (input == input -> getPar() -> getR()) {
 	//Do LR if node is LR to grandparent:
 	  cout << "calling LR" << endl;
 	  rotLR(input);
+	  reorder(input);
 	//Recolor
 	}
       }
@@ -228,15 +233,19 @@ void rbtree::reorder2(node* input) {
 	//Do RL if node is RL to grandparent:
 	  cout << "calling RL" << endl;
 	  rotRL(input);
+	  reorder(input);
 	}
 	else if (input == input -> getPar() -> getR()) {
 	//Do RR if node is RR to grandparent:
 	  cout << "calling RR" << endl;
+	  node* p = input -> getPar();
 	  rotRR(input);
+	  reorder(p);
 	}
       }
     }
   }
+  return;
 }
 
 void rbtree::rotLL(node* input) {
