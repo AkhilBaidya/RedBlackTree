@@ -210,8 +210,13 @@ void rbtree::reorder2(node* input) {
 	if (input == input -> getPar() -> getL()) {
 	//Do LL is node is LL to grandparent:
 	  cout << "calling LL" << endl;
-	  node* p = input -> getPar();
 	  rotLL(input);
+	  node* p = input -> getPar();
+	  cout << "step:" << endl;
+	  print();
+	  cout << p -> getData() << endl;
+	  cout << p -> getColor() << endl;
+	  cout << p -> getPar() -> getData() << endl;
 	  reorder(p);
 	  //Recolor
 	}
@@ -219,12 +224,14 @@ void rbtree::reorder2(node* input) {
 	//Do LR if node is LR to grandparent:
 	  cout << "calling LR" << endl;
 	  rotLR(input);
+	  cout << "step:" << endl;
+	  print();
 	  reorder(input);
 	//Recolor
 	}
       }
     }
-    if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
+    else if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
       cout << "par is r" << endl;
       if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor() == 'B') {
 	cout << "right uncle" << endl;
@@ -232,13 +239,17 @@ void rbtree::reorder2(node* input) {
 	//Do RL if node is RL to grandparent:
 	  cout << "calling RL" << endl;
 	  rotRL(input);
+	  cout << "step: " << endl;
+	  print();
 	  reorder(input);
 	}
 	else if (input == input -> getPar() -> getR()) {
 	//Do RR if node is RR to grandparent:
 	  cout << "calling RR" << endl;
-	  node* p = input -> getPar();
 	  rotRR(input);
+	  node* p = input -> getPar();
+	  cout << "step:" << endl;
+	  print();
 	  reorder(p);
 	}
       }
