@@ -12,7 +12,6 @@ Here are the values that govern a Red Black Tree (taken from Canvas):
 */
 
 #include <iostream>
-#include <fstream>
 #include <cstring>
 #include "rbtree.h"
 
