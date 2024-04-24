@@ -10,7 +10,6 @@ void fileInp(rbtree*);
 
 int main() {
 
-  //Code from previous version of rbtree.cpp (just copied it over and will edit it)
   rbtree* tree = new rbtree();
 
   bool editing = true; //loops the command input process
@@ -22,17 +21,29 @@ int main() {
     cin >> command;
 
     if (!strcmp(command, "ADD")) {
+      char answer[10];
+      cout << "Would you like to add a node yourself (man) or by a file (file)?" << endl;
+      cin >> answer;
+      
+      if (!strcmp(answer, "man")) {
+	manInp(tree);
+	cout << "added" << endl;
+      }
+
+      else if (!strcmp(answer, "file")) {
+	fileInp(tree);
+	cout << "added" << endl;
+      }
+
+      else {
+	cout << "Did not understand what you meant!" << endl;
+      }
+      
     }
 
     else if (!strcmp(command, "PRINT")) {
-      //if (head == NULL) {
-      //cout << "There is no tree ~ <3" << endl
-      //}
-
-      //else {
         cout << "Here's the tree:" << endl;
         tree -> print();
-	//}
     }
 
     else if (!strcmp(command, "QUIT")) {
@@ -51,6 +62,7 @@ int main() {
 
 void manInp(rbtree* tree) {
   int toAdd;
+  cout << "What number would you like to add?" << endl;
   cin >> toAdd;
   tree -> add(toAdd);
   return;
@@ -66,4 +78,5 @@ void fileInp(rbtree* tree) {
   while (file >> toAdd) {
     tree -> add(toAdd);
   }
+  return;
 }
