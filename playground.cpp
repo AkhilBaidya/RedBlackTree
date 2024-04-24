@@ -1,8 +1,12 @@
 #include <iostream>
+#include <fstream>
 #include <cstring>
 #include "rbtree.h"
 
 using namespace std;
+
+void manInp(rbtree*);
+void fileInp(rbtree*);
 
 int main() {
 
@@ -18,10 +22,6 @@ int main() {
     cin >> command;
 
     if (!strcmp(command, "ADD")) {
-      int toAdd;
-      cin >> toAdd;
-      tree -> add(toAdd);
-      cout << "added" << endl;
     }
 
     else if (!strcmp(command, "PRINT")) {
@@ -47,4 +47,23 @@ int main() {
     }
   }
   return 0;
+}
+
+void manInp(rbtree* tree) {
+  int toAdd;
+  cin >> toAdd;
+  tree -> add(toAdd);
+  return;
+}
+
+void fileInp(rbtree* tree) {
+  char fileN[20];
+  int toAdd;
+  cout << "What is the name of the file you wish to input? " << endl;
+  cin >> fileN;
+  
+  ifstream file(fileN);
+  while (file >> toAdd) {
+    tree -> add(toAdd);
+  }
 }
