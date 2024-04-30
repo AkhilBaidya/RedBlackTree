@@ -1,14 +1,19 @@
-//C++ Data Structures: Red Black Tree - Akhil Baidya
+//C++ Data Structures: Red Black Tree Class Definitions - Akhil Baidya
 //Submission Date: 5/2/24
-/*
-Notes: This is a self-balancing Binary Tree that takes integers from 1-999. It can add them manually or through a file and print out the values.
 
-Here are the values that govern a Red Black Tree (taken from Canvas):
+/*
+Notes:
+This is a self-balancing Binary Tree that takes integers from 1-999. This file defines how nodes are added to the tree, how they are deleted from the tree, how the tree prints itself, and how it reorders itself (see header file).
+
+Sources:
+Here are the rules that govern a Red Black Tree (taken from Canvas):
 1) A node is either red or black.
 2) The root is black.
 3) All leaves (NULL) are black.
 4) Both children of every red node are black.
 5) Every simple path from a given node to any of its descendant leaves contains the same number of black nodes.
+
+Additionally, referred to https://www.geeksforgeeks.org/insertion-in-red-black-tree/, the web article by GeeksforGeeks on Red Black Tree insertion. This provided more clarity as to what triggers rotations in a red black tree (a null or black uncle) or a simple recoloring (a red uncle). Additionally, it provided general steps for the rotations and recoloring.
 */
 
 #include <iostream>
@@ -17,177 +22,197 @@ Here are the values that govern a Red Black Tree (taken from Canvas):
 
 using namespace std;
 
-rbtree::rbtree() { //constructor
+//Constructor:
+rbtree::rbtree() {
   head = NULL;
 }
 
-rbtree::~rbtree() { //destructor
+//Destructor:
+rbtree::~rbtree() {
 }
 
-//The add function accesses the tree and adds an input to it in the fashion of a binary tree (going down to the right if larger and down to the left if smaller or equal to). The input is added as a leaf to the tree, initially.
+
+//PUBLIC FUNCTIONS: ----------
+
+/*This is the add function which accesses the tree and adds some input in it in the fashion of a binary tree (going down to the right if input's value is larger than the current node's and down to the left if smaller or equal to). The input is added as a leaf to the tree, initially. Reorders are called after this addition.*/
 void rbtree::add(int input) {
   node* current = head;
   node* previous = head;
-  
-  node* toAdd = new node(input);
+  node* toAdd = new node(input); //This node will be added
 
-  if (current == NULL) { //case of null head
-    head = toAdd;
-    head -> setColor('B'); //when adding to root 
+  //Binary tree addition:
+
+  //Case of a null head:
+  if (current == NULL) {
+    head = toAdd; //set the head to the input
+    head -> setColor('B'); //the head should be black 
   }
-  
-  else {
-    while (current != NULL) { //find parent of place to add
 
+  //Otherwise:
+  else {
+    while (current != NULL) { //find the parent of the location to add (by using previous, when current == NULL)
       previous = current;
       
-      if (input <= current -> getData()) {
+      if (input <= current -> getData()) { //traverse down tree
 	current = current -> getL();
       }
 
-      else if (input > current-> getData()) {
+      else if (input > current-> getData()) { //traverse down tree
 	current = current -> getR();
       }
     }
     
-    if (input > previous -> getData()) { //add the new node
+    if (input > previous -> getData()) { //add the new node as the right child of "previous" 
       previous -> setR(toAdd);
       toAdd -> setPar(previous);
     }
 
-    else if (input <= previous -> getData()) {
+    else if (input <= previous -> getData()) { //or add the new node as the left child of "previous"
       previous -> setL(toAdd);
       toAdd -> setPar(previous);
     }
   }
+  //Call reorder:
   reorder(toAdd);
-  cout << "current tree" << endl;
+
+  //Show tree updates:
+  cout << "Current Tree:" << endl;
   print();
   return;
 }
 
+/*This is the print function which prints out the tree sideways with each node (including their values and colors). It calls a private function to do this.*/
 void rbtree::print() {
+  //If the head is not empty, then call the private function:
   if (head != NULL) {
     recPrint(head,0);
   }
   return;
 }
 
+/*This is the delete function (work in progress)*/
 void rbtree::del(int input){
   return;
 }
 
-//The print function accesses the tree and prints it out recursively, as a sideways tree. It will print out the color of each node as well as the node value.
+
+//PRIVATE FUNCTIONS: ----------
+
+/*This is the recursive print function. It accesses the tree and takes in some current depth to print each node out (its depth, color, and value). This forms a sideways tree.*/
 void rbtree::recPrint(node* input, int depth) {
-  //at end of tree, print current with depth
+
+  //When the code reaches the end of tree, print the current node with depth:
   if (input -> getR() == NULL && input -> getL() == NULL) {
-    //depth
+    //Depth:
     for (int i = 0; i < depth; i++){
       cout << "\t";
     }
-    //value
+    //Value:
     cout << "[" << input -> getColor() << ":" << input -> getData() << "]" << endl;
     return;
   }
 
-  //print right, current, then left recursively
+  //Print right, current, then left recursively (creating a sideways tree):
 
+  //Recurse right:
   if (input -> getR() != NULL) {
-    recPrint(input -> getR(), depth + 1); //recurse right
+    recPrint(input -> getR(), depth + 1);
   }
 
-  //current node depth
-  for (int i = 0; i < depth; i++){
+  //Print current:
+  //Current node depth:
+  for (int i = 0; i < depth; i++) {
       cout << "\t";
-    }
-
-  //current node value
+  }
+  //Current node value:
   cout << "[" << input -> getColor() << ":" << input -> getData() << "]" << endl;
 
+  //Recurse left:
   if (input -> getL() != NULL) {
-    recPrint(input -> getL(), depth + 1); //recurse left
+    recPrint(input -> getL(), depth + 1);
   }
   return;
 }
 
+/*
+This is the reorder function which calls the two main cases of reordering (red uncle or black uncle): 
+*/
 void rbtree::reorder(node* input) {
+
+  //The parent must not be black for all rotations and, for all cases, the current node should be red:
   if (input -> getPar() != NULL && input -> getColor() == 'R' && input -> getPar() -> getColor() != 'B') {
-    reorder2(input); //parent must not be black for the rotations cases and for all cases the current thing looked at must be red
+    reorder2(input);
     cout << "did a B-uncle reorder" << endl;
 
-    if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
+    //If the uncle is red:
+    if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) { //just in case, make sure there is a parent and grandparent
       if (input -> getPar() == input -> getPar() -> getPar() -> getL() && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
-	reorder1(input);
+	reorder1(input); //case if uncle is right child of grandparent
     }
 
       else if (input -> getPar() == input -> getPar() -> getPar() -> getR() && input -> getPar() -> getPar() -> getL() -> getColor() == 'R'){
-	reorder1(input);
+	reorder1(input); //case if uncle is left child of grandparent
     }
     cout << "did a R-uncle reorder" << endl;
   }
   }
-  
+
+  //A check for issues with head:
   if (head == NULL) {
     cout << "note: erasure" << endl;
   }
-  
-  if (head -> getColor() == 'R') { //the root must always be black!
+
+  //The root must always be set to black:
+  if (head -> getColor() == 'R') {
     head -> setColor('B');
   }
 
+  //Another check for issues with head:
   if (head == NULL) {
     cout << "note: woah there. this shouldn't be printed out" << endl;
   }
   return;
 }
 
-//The reorder functions will reorganize the tree according to the 5 epic rules that govern a red black tree.
+/*
+This reorder1 function recolors the tree when the current node's uncle is red.
+*/
 void rbtree::reorder1(node* input) {
-
-  //This source helped me understand the two main cases for tree insertion:
-  //https://www.geeksforgeeks.org/insertion-in-red-black-tree/
-  
   //Big Case 1: The Parent's Sibling is Red
 
+  //Quick Check (we want a parent):
   if (input -> getPar() == NULL) {
     return;
   }
 
+  //Quick Check (we want a grandparent):
   if (input -> getPar() -> getPar() == NULL) {
     return;
-  } //return statements for this recursive function
-
-  //If current node's parent if parent is not null is left node of grandparent - if grandparents right child is not null and red:
+  }
   
   if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
 
+    //If the uncle is the grandparent's right child (and it is not null and it is red): 
     if (input -> getPar() == input -> getPar() -> getPar() -> getL()) { 
-
       if (input -> getPar() -> getPar() -> getR() != NULL && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
-	//Be adding the node as red! Then Change parent and parent's sibling to black and grandparent to red
-
-
+	//Node is added as red by default! Then change parent and parent's sibling to black and grandparent to red:
 	input -> getPar() -> setColor('B');
 	input -> getPar() -> getPar() -> getR() -> setColor('B');
 	input -> getPar() -> getPar() -> setColor('R');
        
-	//Recursively do this on grandparent
+	//Check for more reorderings on the grandparent:
 	reorder(input -> getPar() -> getPar());
       }
-      
     }
 
-    //If current node's parent if parent is not null is right node of grandparent - if grandparent's left child is not null and red:
-
+    //If the uncle is the grandparent's left child (and it is not null and it is red):
     else if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
-
       if (input -> getPar() -> getPar() -> getL() != NULL && input -> getPar() -> getPar() -> getR() -> getColor() == 'R') {
-	
+	//Same
 	input -> getPar() -> setColor('B');
 	input -> getPar() -> getPar() -> getL() -> setColor('B');
 	input -> getPar() -> getPar() -> setColor('R');
        
-	//Recursively check grandparent
 	reorder(input -> getPar() -> getPar());
       }      
     }
@@ -195,20 +220,24 @@ void rbtree::reorder1(node* input) {
   return;
 }
 
+/*This reorder function calls certain rotations when the current node's uncle is black or null.*/
 void rbtree::reorder2(node* input) {
-
   //Big Case 2: The Parent's Sibling is Black or NULL
 
+  //Quickly check if there is a parent and grandparent:
   if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
     cout << "stage 1" << endl;
     
     //If that is true:
+    
+    //If the uncle is the right child of the grandparent (and is null or black):
     if (input -> getPar() == input -> getPar() -> getPar() -> getL()) {
       cout << "par is l" << endl;
       if (input -> getPar() -> getPar() -> getR() == NULL || input -> getPar() -> getPar() -> getR() -> getColor() == 'B') {
 	cout << "right uncle" << endl;
+	
 	if (input == input -> getPar() -> getL()) {
-	//Do LL is node is LL to grandparent:
+	//Do Left-Left rotation if current node is Left-Left to grandparent (left child of left child):
 	  cout << "calling LL" << endl;
 	  rotLL(input);
 	  node* p = input -> getPar();
@@ -217,32 +246,35 @@ void rbtree::reorder2(node* input) {
 	  cout << p -> getData() << endl;
 	  cout << p -> getColor() << endl;
 	  cout << p -> getPar() -> getData() << endl;
-	  reorder(p);
-	  //Recolor
+	  reorder(p); //Call more reordering on the parent, just in case
 	}
+	
 	else if (input == input -> getPar() -> getR()) {
-	//Do LR if node is LR to grandparent:
+	//Do Left-Right rotation if node is Left-Right to grandparent:
 	  cout << "calling LR" << endl;
 	  rotLR(input);
 	  cout << "step:" << endl;
 	  print();
-	  reorder(input);
-	//Recolor
+	  reorder(input); //Call more reordering on the input (current node added), just in case
 	}
       }
     }
+
+    //If the uncle is the left child of the grandparent (and is null or black):
     else if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
       cout << "par is r" << endl;
       if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor() == 'B') {
 	cout << "right uncle" << endl;
+	
 	if (input == input -> getPar() -> getL()) { 
 	//Do RL if node is RL to grandparent:
 	  cout << "calling RL" << endl;
 	  rotRL(input);
 	  cout << "step: " << endl;
 	  print();
-	  reorder(input);
+	  reorder(input); //Check for more reordering on input
 	}
+	
 	else if (input == input -> getPar() -> getR()) {
 	//Do RR if node is RR to grandparent:
 	  cout << "calling RR" << endl;
@@ -250,7 +282,7 @@ void rbtree::reorder2(node* input) {
 	  node* p = input -> getPar();
 	  cout << "step:" << endl;
 	  print();
-	  reorder(p);
+	  reorder(p); //Check for more reordering on the parent
 	}
       }
     }
@@ -258,37 +290,37 @@ void rbtree::reorder2(node* input) {
   return;
 }
 
+/*This rotLL function performs a Left-Left rotation.*/
 void rbtree::rotLL(node* input) {
 
-  node* c = input;
-  node* cSib = input -> getPar() -> getR();
-  node* cL = input -> getL();
-  node* cR = input -> getR();
-  node* p = input -> getPar();
-  node* pSib = input -> getPar() -> getPar() -> getR();
-  node* g = input -> getPar() -> getPar();
-  node* gp = g -> getPar();
+  //Involved nodes:
+  node* c = input; //current
+  node* cSib = input -> getPar() -> getR(); //current's sibling
+  node* cL = input -> getL(); //current's left child
+  node* cR = input -> getR(); //current's right child
+  node* p = input -> getPar(); //parent
+  node* pSib = input -> getPar() -> getPar() -> getR(); //uncle
+  node* g = input -> getPar() -> getPar(); //grandparent
+  node* gp = g -> getPar(); //grandparent's parent
   
-  //Cur, CurSib, CurL, CurR, Par, ParSib, ParSibL, ParSibR, Grandpar
-
-  //Grandpar pntr to Par (its left) = CurSib (right of parent)
+  //Grandparent pntr to Par (its left) = CurSib (right of parent):
   g -> setL(cSib);
   if (cSib != NULL) {
     cSib -> setPar(g);
   }
   
-  //Par pntr to CurSib (right pntr) = Grand
+  //Par pntr to CurSib (right pntr) = Grandparent (grandparent becomes parent's child):
   p -> setR(g);
 
-  //if grandparent was the original head
+  //If grandparent was the original head:
   if (g -> getPar() == NULL) {
-    head = p;
+    head = p; //set the new head as the parent
     p -> setPar(NULL);
     g -> setPar(p);
   }
 
-  //if not:
-  else {
+  //If not:
+  else { //set the parent as the child of the grandparent's parent
     if (gp -> getL() == g) {
       gp -> setL(p);
     }
@@ -299,24 +331,23 @@ void rbtree::rotLL(node* input) {
     g -> setPar(p);
   }
   
-  //Par pntr to grand is null
-  //p -> setPar(NULL);
-  
-  //Save color of Par
+  //Save the color of Par:
   char save = p -> getColor();
   
-  //Par = Grand color
+  //Par takes the Grandparent's color:
   p -> setColor(g -> getColor());
   
-  //Grand = saved color
+  //Grandparent takes the saved (parent's) color:
   g -> setColor(save);
-
 
   return;
 }
 
+/*
+This rotLR function performs a Left-Right rotation. It also calls a LL rotation at the end.
+*/
 void rbtree::rotLR(node* input) {
-  //same notation as above
+  //Same notation as previous function:
   node* c = input;
   node* cSib = input -> getPar() -> getL();
   node* cL = input -> getL();
@@ -325,31 +356,35 @@ void rbtree::rotLR(node* input) {
   node* pSib = input -> getPar() -> getPar() -> getR();
   node* g = input -> getPar() -> getPar();
   
-  //Grand pntr to Par (its left) = Cur
+  //Grand pntr to Par (its left) = Cur:
   g -> setL(c);
   c -> setPar(g);
   
-  //Par pntr to Cur (its right) = CurL
+  //Par pntr to Cur (its right) = CurL:
   p -> setR(cL);
-  if (cL != NULL) {
+  if (cL != NULL) { //if left child of current is an actual node, set its parent as the parent of the current node (otherwise no avoid doubly linking for seg faults)
     cL -> setPar(p);
     }
   
-  //Cur pntr to CurL = Par
+  //Cur pntr to CurL = Par:
   c -> setL(p);
   p -> setPar(c);
 
-  if (head == g) {
+  if (head == g) { //if the head was the grandparent, set the head to the current node
     head = c;
   }
-  //LL on Parent
+  
+  //Perform a LL rotation on the parent:
   rotLL(p);
 
   return;
 }
 
+/*
+This rotRR function performs a Right-Right rotation. 
+*/
 void rbtree::rotRR(node* input) {
-  //same notation as above
+  //Same notation as above:
   node* c = input;
   node* cSib = input -> getPar() -> getL();
   node* cL = input -> getL();
@@ -359,25 +394,25 @@ void rbtree::rotRR(node* input) {
   node* g = input -> getPar() -> getPar();
   node* gp = g -> getPar();
   
-  //Grandpar pntr to Par (its right) = CurSib (left of parent)
+  //Grandparent pntr to Par (its right) = CurSib (left of parent):
   g -> setR(cSib);
   if (cSib != NULL) {
     cSib -> setPar(g);
   }
   
-  //Par pntr to CurSib (left pntr) = Grand
+  //Par pntr to CurSib (left pntr) = Grandparent:
   p -> setL(g);
 
   
-  //if grandparent was the original head
+  //If the grandparent was the original head:
   if (g -> getPar() == NULL) {
-    head = p;
+    head = p; //set the new head as the parent
     p -> setPar(NULL);
     g -> setPar(p);
   }
 
-  //if not:
-  else {
+  //If not:
+  else { //set the parent as the child of the grandparent's parent
     if (gp -> getL() == g) {
       gp -> setL(p);
     }
@@ -387,23 +422,24 @@ void rbtree::rotRR(node* input) {
     p -> setPar(gp);
     g -> setPar(p);
   }
-  
-  //Par pntr to Grand = null
-  //p -> setPar(NULL);
-  
-  //Save color of Par
+ 
+  //Save color of Parent:
   char save = p -> getColor();
   
-  //Par = Grand color
+  //Parent takes Grandparent's color:
   p -> setColor(g -> getColor());
   
-  //Grand = saved color
+  //Grandparent takes saved color:
   g -> setColor(save);
 
   return;
 }
 
+/*
+This rotRL function performs a Right-Left rotation.
+*/
 void rbtree::rotRL(node* input) {
+  //Same notation as above:
   node* c = input;
   node* cSib = input -> getPar() -> getR();
   cout << "got csib" << endl;
@@ -418,28 +454,29 @@ void rbtree::rotRL(node* input) {
   node* g = input -> getPar() -> getPar();
   cout << "got grandma" << endl;
   
-  //Grand pntr to Par (its right) = Cur
+  //Grand pntr to Par (its right) = Cur:
   g -> setR(c);
   c -> setPar(g);
   cout << "set g right" << endl;
  
-  //Par pntr to Cur (its left) = CurR
+  //Par pntr to Cur (its left) = CurR:
   p -> setL(cR);
   if (cR != NULL) {
     cR -> setPar(p);
   }
   cout << "p set left" << endl;
   
-  //Cur pntr to CurR = Par
+  //Cur pntr to CurR = Par:
   c -> setR(p);
   p -> setPar(c);
   cout << "c set r" << endl;
 
+  //If the head is the grandparent, set the head to the current node:
   if (head == g) {
     head = c;
   }
   
-  //RR on Parent
+  //Perform RR rotation on Parent:
   cout << "rotating RR" << endl;
   rotRR(p);
   cout << "did the other rotate" << endl;
