@@ -1,8 +1,17 @@
 #ifndef RBTREE_H
 #define RBTREE_H
 
-//Header file for rbtree
-//Header guards from https://www.learncpp.com/cpp-tutorial/header-guards/
+//C++ Data Structures: Red Black Tree Class Header File - Akhil Baidya
+//Submisson Deadline: 5/2/2024
+
+/*
+Notes:
+The Red Black Tree Class possesses several functions that add to (add), delete from (del), print from (print), and manipulate the tree (private functions called after "add"). It also has a constructor and destructor, as a class.
+
+Sources:
+Referred to https://www.learncpp.com/cpp-tutorial/header-guards/, a tutorial provided by user "Alex" from the website "Learn C++" for header guard syntax. 
+*/
+
 #include <iostream>
 #include <cstring>
 #include "node.h"
@@ -12,22 +21,35 @@
 class rbtree {
 
 public:
-  rbtree(); //constructor
-  ~rbtree(); //destructor
 
+  //Constructor:
+  rbtree();
+
+  //Destructor:
+  ~rbtree();
+
+  //Add to Tree:
   void add(int);
+
+  //Print Tree:
   void print();
+
+  //Delete from Tree:
   void del(int);
   
 private:
-  node* head;
-  void reorder1(node*); //parent's sibling is red
-  void reorder2(node*); //parent's sibling is black or NULL
-  void rotLL(node*); //rotations
-  void rotLR(node*);
-  void rotRL(node*);
-  void rotRR(node*);
-  void recPrint(node*, int);
+  //Key Data:
+  node* head; //the head of the tree
+
+  //Private Functions:
+  void reorder(node*); //calls the other reorders
+  void reorder1(node*); //called if parent's sibling is red
+  void reorder2(node*); //called parent's sibling is black or NULL
+  void rotLL(node*); //a Left-Left rotation (refers to position of current node with respect to grandparent node)
+  void rotLR(node*); //a Left-Right rotation
+  void rotRL(node*); //a Right-Left rotation
+  void rotRR(node*); //a Right-Right rotation
+  void recPrint(node*, int); //called by the print function to recursively go through tree
 };
 
 #endif
