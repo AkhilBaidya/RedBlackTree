@@ -1,5 +1,6 @@
 //C++ Data Structures: Node Class Definitions - Akhil Baidya
-//Submission Date: 3/22/2024
+//Submission Date: 5/2/2024
+
 /*
 Notes: This file defines the get and set functions (for the integer data, color, parent, left child, and right child of the node), constructor, and destructor of the node class.
 */
@@ -12,11 +13,11 @@ using namespace std;
 
 //Constructors
 node::node() {
-  parent = NULL;
+  parent = NULL; //set pointers to null
   left = NULL;
   right = NULL;
   data = 0;
-  color = 'R';
+  color = 'R'; //by default, the node is red
 }
 
 node::node(int input) {
@@ -29,7 +30,7 @@ node::node(int input) {
 
 //Destructor
 node::~node() {
-  delete parent;
+  delete parent; //delete pointers
   delete left;
   delete right;
 }
