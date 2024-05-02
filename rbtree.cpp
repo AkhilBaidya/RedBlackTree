@@ -142,7 +142,7 @@ void rbtree::reorder(node* input) {
   //The parent must not be black for all rotations and, for all cases, the current node should be red:
   if (input -> getPar() != NULL && input -> getColor() == 'R' && input -> getPar() -> getColor() != 'B') {
     reorder2(input);
-    cout << "did a B-uncle reorder" << endl;
+    //cout << "did a B-uncle reorder" << endl; (testing)
 
     //If the uncle is red:
     if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) { //just in case, make sure there is a parent and grandparent
@@ -153,7 +153,7 @@ void rbtree::reorder(node* input) {
       else if (input -> getPar() == input -> getPar() -> getPar() -> getR() && input -> getPar() -> getPar() -> getL() -> getColor() == 'R'){
 	reorder1(input); //case if uncle is left child of grandparent
     }
-    cout << "did a R-uncle reorder" << endl;
+      //cout << "did a R-uncle reorder" << endl; (testing)
   }
   }
 
@@ -226,35 +226,35 @@ void rbtree::reorder2(node* input) {
 
   //Quickly check if there is a parent and grandparent:
   if (input -> getPar() != NULL && input -> getPar() -> getPar() != NULL) {
-    cout << "stage 1" << endl;
+    //cout << "stage 1" << endl; (testing)
     
     //If that is true:
     
     //If the uncle is the right child of the grandparent (and is null or black):
     if (input -> getPar() == input -> getPar() -> getPar() -> getL()) {
-      cout << "par is l" << endl;
+      //cout << "par is l" << endl; (testing)
       if (input -> getPar() -> getPar() -> getR() == NULL || input -> getPar() -> getPar() -> getR() -> getColor() == 'B') {
-	cout << "right uncle" << endl;
+	//cout << "right uncle" << endl; (testing)
 	
 	if (input == input -> getPar() -> getL()) {
 	//Do Left-Left rotation if current node is Left-Left to grandparent (left child of left child):
-	  cout << "calling LL" << endl;
+	  //cout << "calling LL" << endl; (testing)
 	  rotLL(input);
 	  node* p = input -> getPar();
-	  cout << "step:" << endl;
-	  print();
-	  cout << p -> getData() << endl;
-	  cout << p -> getColor() << endl;
-	  cout << p -> getPar() -> getData() << endl;
+	  //cout << "step:" << endl; (testing)
+	  //print();
+	  //cout << p -> getData() << endl;
+	  //cout << p -> getColor() << endl;
+	  //cout << p -> getPar() -> getData() << endl;
 	  reorder(p); //Call more reordering on the parent, just in case
 	}
 	
 	else if (input == input -> getPar() -> getR()) {
 	//Do Left-Right rotation if node is Left-Right to grandparent:
-	  cout << "calling LR" << endl;
+	  //cout << "calling LR" << endl; (testing)
 	  rotLR(input);
-	  cout << "step:" << endl;
-	  print();
+	  //cout << "step:" << endl; (testing)
+	  //print();
 	  reorder(input); //Call more reordering on the input (current node added), just in case
 	}
       }
@@ -262,26 +262,26 @@ void rbtree::reorder2(node* input) {
 
     //If the uncle is the left child of the grandparent (and is null or black):
     else if (input -> getPar() == input -> getPar() -> getPar() -> getR()) {
-      cout << "par is r" << endl;
+      //cout << "par is r" << endl; (testing)
       if (input -> getPar() -> getPar() -> getL() == NULL || input -> getPar() -> getPar() -> getL() -> getColor() == 'B') {
-	cout << "right uncle" << endl;
+	//cout << "right uncle" << endl; (testing)
 	
 	if (input == input -> getPar() -> getL()) { 
 	//Do RL if node is RL to grandparent:
-	  cout << "calling RL" << endl;
+	  //cout << "calling RL" << endl; (testing)
 	  rotRL(input);
-	  cout << "step: " << endl;
-	  print();
+	  //cout << "step: " << endl; (testing)
+	  //print();
 	  reorder(input); //Check for more reordering on input
 	}
 	
 	else if (input == input -> getPar() -> getR()) {
 	//Do RR if node is RR to grandparent:
-	  cout << "calling RR" << endl;
+	  //cout << "calling RR" << endl; (testing)
 	  rotRR(input);
 	  node* p = input -> getPar();
-	  cout << "step:" << endl;
-	  print();
+	  //cout << "step:" << endl; (testing)
+	  //print();
 	  reorder(p); //Check for more reordering on the parent
 	}
       }
@@ -442,34 +442,34 @@ void rbtree::rotRL(node* input) {
   //Same notation as above:
   node* c = input;
   node* cSib = input -> getPar() -> getR();
-  cout << "got csib" << endl;
+  //cout << "got csib" << endl; (testing)
   node* cL = input -> getL();
-  cout << "got left ch" << endl;
+  //cout << "got left ch" << endl;
   node* cR = input -> getR();
-  cout << "got right ch" << endl;
+  //cout << "got right ch" << endl;
   node* p = input -> getPar();
-  cout << "parent" << endl;
+  //cout << "parent" << endl;
   node* pSib = input -> getPar() -> getPar() -> getL();
-  cout << "got uncle" << endl;
+  //cout << "got uncle" << endl;
   node* g = input -> getPar() -> getPar();
-  cout << "got grandma" << endl;
+  //cout << "got grandma" << endl;
   
   //Grand pntr to Par (its right) = Cur:
   g -> setR(c);
   c -> setPar(g);
-  cout << "set g right" << endl;
+  //cout << "set g right" << endl; (testing)
  
   //Par pntr to Cur (its left) = CurR:
   p -> setL(cR);
   if (cR != NULL) {
     cR -> setPar(p);
   }
-  cout << "p set left" << endl;
+  //cout << "p set left" << endl;
   
   //Cur pntr to CurR = Par:
   c -> setR(p);
   p -> setPar(c);
-  cout << "c set r" << endl;
+  //cout << "c set r" << endl;
 
   //If the head is the grandparent, set the head to the current node:
   if (head == g) {
@@ -477,9 +477,9 @@ void rbtree::rotRL(node* input) {
   }
   
   //Perform RR rotation on Parent:
-  cout << "rotating RR" << endl;
+  //cout << "rotating RR" << endl; (testing)
   rotRR(p);
-  cout << "did the other rotate" << endl;
+  //cout << "did the other rotate" << endl;
 
   return;
 }
