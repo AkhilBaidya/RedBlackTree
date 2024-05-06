@@ -92,6 +92,58 @@ void rbtree::print() {
 
 /*This is the delete function (work in progress)*/
 void rbtree::del(int input){
+
+  //Referred with https://www.programiz.com/dsa/red-black-tree
+
+  //chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf
+
+
+  //Standard BST Deletion:
+  
+  //Case 0a: If the node to be deleted, d, has two children:
+  //Go left and recursively go right until not possible. Reach node x
+  //Replace d with x's value and delete x.
+  //If x had a left child. Set that left child as the child of the parent of x (take x's position and color).
+
+  //Case 0b: If the node to be deleted has one child and it is not the case that both are black:
+  //The child, x, becomes the child of d's parent. And it becomes black.
+  //Delete d.
+
+  //Case 0c: If node to be deleted is red and is a leaf. Just delete it.
+
+
+  //Black-Black Cases: Else (if both d and x are black (including when x is null) and d has one or no children)
+  //x becomes child of d's parent. Delete d.
+
+  //Now we still look at x. Get the sibling.
+
+  //Do these cases if x is not the head:
+  
+  //Case 1:
+  //If x's sibling (if x is null refer to the previous parent of d's other child) is black and has at least one red child:
+
+  //a) If sib is left child and at least its left child is red (or both are) - LL rotate its left child
+  //b) If sib is left and has a right red child (LR on right child)
+  //c) If sib is right child and at least its right child is red (or both are) - RR rotate on right child
+  //d) If sib is right child and has a left red child (RL rotate on left child)
+  //Do not need to recurse on anything
+  
+  //Case 2:
+  //If x's sibling is black and has no red children:
+
+  //Sibling becomes red.
+  //If Parent is already black, call all the case checks on the parent
+  //Otherwise make the parent black
+
+  //Case 3:
+  //x's sibling is red
+
+  //If sibling is a left child:
+
+  //If sibling is a right child:
+  //sibling takes parent's position.
+  
+  
   return;
 }
 
