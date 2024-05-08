@@ -143,7 +143,6 @@ void rbtree::del(int input){
   //If sibling is a right child:
   //sibling takes parent's position.
   
-  
   return;
 }
 
@@ -185,6 +184,35 @@ void rbtree::recPrint(node* input, int depth) {
   }
   return;
 }
+
+//REORDERING FOR DELETION (for double-black scenarios):
+void case1(node* input) { //don't do anything if double-black is head
+  if (head == input) {
+    return;
+  }
+  else {
+    case2(input);
+  }
+  return;
+}
+
+void case2(node* input) {
+}
+
+void case3(node* input) {
+}
+
+void case4(node* input) {
+}
+
+void case5(node* input) {
+}
+
+void case6(node* input) {
+}
+
+
+//REORDERING FOR INSERTION:
 
 /*
 This is the reorder function which calls the two main cases of reordering (red uncle or black uncle): 
@@ -341,6 +369,8 @@ void rbtree::reorder2(node* input) {
   }
   return;
 }
+
+//ROTATIONS:
 
 /*This rotLL function performs a Left-Left rotation.*/
 void rbtree::rotLL(node* input) {
