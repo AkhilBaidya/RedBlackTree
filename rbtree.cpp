@@ -213,59 +213,92 @@ void case2(node* input) { //the sibling of x is red
   node* sL = s -> getL();
   node sR = s -> getR();
 
-  //Rotate s over p:
-  if (head == p) {
-    head = s;
-  }
-
-  else if (p = g -> getL()) {
-    g -> setL(s);
-    s -> setPar(g);
-  }
-
-  else if (p = g -> getR()) {
-    g -> setR(s);
-    s -> setPar(g);
-  }
-
-  if (s = p -> getR()) {
-    s -> setL(p);
-    p -> setPar(s);
-
-    p -> setR(sL);
-    if (sL != NULL) {
-      sL -> setPar(p);
+  if (s -> getColor() == 'R') {
+    //Rotate s over p:
+    if (head == p) {
+      head = s;
     }
-  }
 
-  else if (s = p -> getL()) {
-    s -> setR(p);
-    p -> setPar(s);
-
-    p - setL(sR);
-    if (sR != NULL) {
-      sR -> setPar(p);
+    else if (p = g -> getL()) {
+      g -> setL(s);
+      s -> setPar(g);
     }
+
+    else if (p = g -> getR()) {
+      g -> setR(s);
+      s -> setPar(g);
+    }
+
+    if (s = p -> getR()) {
+      s -> setL(p);
+      p -> setPar(s);
+
+      p -> setR(sL);
+      if (sL != NULL) {
+	sL -> setPar(p);
+      }
+    }
+
+    else if (s = p -> getL()) {
+      s -> setR(p);
+      p -> setPar(s);
+
+      p - setL(sR);
+      if (sR != NULL) {
+	sR -> setPar(p);
+      }
+    }
+
+    //Swap s and p's color:
+    char color = p -> getColor();
+    p -> setColor(s -> getColor());
+    s -> setColor(color);
   }
 
-  //Swap s and p's color:
-  char color = p -> getColor();
-  p -> setColor(s -> getColor());
-  s -> setColor(color);
+  if (s -> getColor() == 'B') {
+    case3(input);
+  }
 
-  case3(input);
+  else if (s -> getColor() == 'R') {
+    case4(input);
+  }
+  
+  return;
 }
 
-void case3(node* input) {
+void case3(node* input) { //Sibling is black
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  node* sL = s -> getL();
+  node sR = s -> getR();
+
+  if (s -> getColor() == 'B') {
+    //Color s red:
+    s -> setColor('R');
+
+    //Call case 1 on p:
+    case1(p);  
+  }
+
+  return;
 }
 
-void case4(node* input) {
+void case4(node* input) { //parent is red and s and s's children are black
 }
 
-void case5(node* input) {
+void case5(node* input) { //RL or LR case of siblings children being red.
 }
 
-void case6(node* input) {
+void case6(node* input) { //RR or LL case of siblings children being red.
 }
 
 
