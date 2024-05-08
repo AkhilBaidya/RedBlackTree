@@ -186,6 +186,8 @@ void rbtree::recPrint(node* input, int depth) {
 }
 
 //REORDERING FOR DELETION (for double-black scenarios):
+//The double-black node will be referred to as "x"
+
 void case1(node* input) { //don't do anything if double-black is head
   if (head == input) {
     return;
@@ -196,7 +198,62 @@ void case1(node* input) { //don't do anything if double-black is head
   return;
 }
 
-void case2(node* input) {
+void case2(node* input) { //the sibling of x is red
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  node* sL = s -> getL();
+  node sR = s -> getR();
+
+  //Rotate s over p:
+  if (head == p) {
+    head = s;
+  }
+
+  else if (p = g -> getL()) {
+    g -> setL(s);
+    s -> setPar(g);
+  }
+
+  else if (p = g -> getR()) {
+    g -> setR(s);
+    s -> setPar(g);
+  }
+
+  if (s = p -> getR()) {
+    s -> setL(p);
+    p -> setPar(s);
+
+    p -> setR(sL);
+    if (sL != NULL) {
+      sL -> setPar(p);
+    }
+  }
+
+  else if (s = p -> getL()) {
+    s -> setR(p);
+    p -> setPar(s);
+
+    p - setL(sR);
+    if (sR != NULL) {
+      sR -> setPar(p);
+    }
+  }
+
+  //Swap s and p's color:
+  char color = p -> getColor();
+  p -> setColor(s -> getColor());
+  s -> setColor(color);
+
+  case3(input);
 }
 
 void case3(node* input) {
