@@ -42,9 +42,21 @@ private:
   node* head; //the head of the tree
 
   //Private Functions:
+
+  //Reordering for deletion:
+  void case1(node*);
+  void case2(node*);
+  void case3(node*);
+  void case4(node*);
+  void case5(node*);
+  void case6(node*);
+  
+  //Reordering for insertion:
   void reorder(node*); //calls the other reorders
   void reorder1(node*); //called if parent's sibling is red
   void reorder2(node*); //called parent's sibling is black or NULL
+
+  //Rotations:
   void rotLL(node*); //a Left-Left rotation (refers to position of current node with respect to grandparent node)
   void rotLR(node*); //a Left-Right rotation
   void rotRL(node*); //a Right-Left rotation
