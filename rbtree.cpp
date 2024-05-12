@@ -112,7 +112,7 @@ void rbtree::del(int input){
   if (current != NULL) {
     node* d = current; //to delete
 
-    //case 0c:
+    //case red leaf:
     if (d -> getColor() == 'R' && d -> getL() == NULL & d -> getR() == NULL) {
       if (d == d -> getPar() -> getL()) {
 	d -> getPar() -> setL(NULL);
@@ -129,6 +129,58 @@ void rbtree::del(int input){
       }
     }
 
+    //case just head
+
+    else if (d == head && head -> getL() == NULL && head -> getR() == NULL) {
+      head = NULL;
+      delete d;
+    }
+
+    //case if node to be deleted has one child and both are not black
+    l = d -> getL();
+    r = d -> getR();
+    
+    else if (d -> getColor() != 'B' && r = NULL && l != NULL && l -> getColor() != 'B' || d -> getColor() != 'B' && l == NULL && r != NULL && r -> getColor() != 'B') {
+
+      node* p = d -> getPar();
+      node* c;
+      if (l != NULL) {
+	c = l;
+      }
+      else if (r != NULL) {
+	c = r;
+      }
+
+      if (d != head) {
+	d -> setData(c -> getData());
+	d -> setColor('B');
+	d -> setL(c -> getL());
+	d -> setR(c -> getR());
+	
+	if (c == d -> getL()) {
+	  d -> setL(NULL);
+	}
+	else if (c == d -> getR()) {
+	  d -> setR(NULL);
+	}
+	c -> setL(NULL);
+	c -> setR(NULL);
+	delete c;
+      }
+      else if (d == head) {
+	head = c;
+	d -> setL(NULL);
+	d -> setR(NULL);
+	c -> setPar(NULL);
+	delete d;
+	head -> setColor('B');
+      }
+    }
+
+    //if the node to be deleted has two children
+    else if (d -> getL() != NULL && d -> getR() != NULL) {
+      
+    }
   }
   return;
   
