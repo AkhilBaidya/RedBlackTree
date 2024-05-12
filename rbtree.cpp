@@ -210,6 +210,7 @@ void case2(node* input) { //the sibling of x is red
     s = p -> getL();
   }
 
+  if (s != NULL) {
   node* sL = s -> getL();
   node sR = s -> getR();
 
@@ -255,14 +256,27 @@ void case2(node* input) { //the sibling of x is red
     s -> setColor(color);
   }
 
-  if (s -> getColor() == 'B') {
+  if (p = s -> getL()) {
+    if (sL != NULL && sL -> getColor() == 'B') {
+      case3(input);
+    } 
+  }
+
+  else if (p = s -> getR()) {
+    if (sR != NULL && sR -> getColor() == 'B') {
+      case3(input);
+    }
+  }
+
+  else {
+    case3(input);
+  }
+  
+ }
+  else {
     case3(input);
   }
 
-  else if (s -> getColor() == 'R') {
-    case4(input);
-  }
-  
   return;
 }
 
@@ -278,6 +292,7 @@ void case3(node* input) { //Sibling is black
     s = p -> getL();
   }
 
+  if (s != NULL) {
   node* sL = s -> getL();
   node sR = s -> getR();
 
@@ -289,10 +304,45 @@ void case3(node* input) { //Sibling is black
     case1(p);  
   }
 
+  else {
+    case4(input); //else proceed to case 4
+  }
+  }
+  else {
+    case4(input);
+  }
   return;
 }
 
 void case4(node* input) { //parent is red and s and s's children are black
+//Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  if (s != NULL) {
+    sL = s -> getL();
+    sR = s -> getR();
+
+    if (p -> getColor() == 'R' && s -> getColor() == 'B' && sL == NULL && sR == NULL || p -> getColor() == 'R' && s -> getColor() == 'B' && sL -> getColor() == 'B' && sR -> getColor() == 'B') {
+      p -> setColor('B');
+      s -> getColor('R');
+    }
+    else {
+      case5(input);
+    }
+
+  }
+  else {
+    case5(input);
+  }
+  return;
 }
 
 void case5(node* input) { //RL or LR case of siblings children being red.
