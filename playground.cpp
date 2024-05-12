@@ -24,7 +24,7 @@ int main() {
   char command[15]; //stores the user command
   
   while (editing) {
-    cout << "What would you like to do? ADD to tree? PRINT tree? QUIT?" << endl;
+    cout << "What would you like to do? ADD to tree? DELETE from free? PRINT tree? QUIT?" << endl;
     cin >> command;
 
     //Adding to the tree:
@@ -55,6 +55,16 @@ int main() {
     else if (!strcmp(command, "PRINT")) {
         cout << "Here's the tree:" << endl;
         tree -> print();
+    }
+
+    //Deleting from the tree:
+    else if (!strcmp(command, "DELETE")) {
+      int toDel;
+      cout << "What number would you like to delete? " << endl;
+      cin >> toDel;
+      tree -> del(toDel);
+      cout << "Deleted!" << endl;
+      tree -> print();
     }
 
     //Quitting program:
