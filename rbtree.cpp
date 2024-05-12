@@ -239,7 +239,7 @@ void rbtree::del(int input){
 
     else if (d -> getColor() == 'B' && l == NULL && r != NULL && r -> getColor() == 'B') {
       cout << "doubly black from right" << endl;
-      //if doubly black arises from right
+      //if doubly black arises from righ
 
       d -> setData(r -> getData());
       d -> setL(r -> getL());
