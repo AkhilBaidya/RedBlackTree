@@ -327,12 +327,12 @@ void case4(node* input) { //parent is red and s and s's children are black
   }
 
   if (s != NULL) {
-    sL = s -> getL();
-    sR = s -> getR();
+    node* sL = s -> getL();
+    node* sR = s -> getR();
 
     if (p -> getColor() == 'R' && s -> getColor() == 'B' && sL == NULL && sR == NULL || p -> getColor() == 'R' && s -> getColor() == 'B' && sL -> getColor() == 'B' && sR -> getColor() == 'B') {
       p -> setColor('B');
-      s -> getColor('R');
+      s -> setColor('R');
     }
     else {
       case5(input);
@@ -346,6 +346,65 @@ void case4(node* input) { //parent is red and s and s's children are black
 }
 
 void case5(node* input) { //RL or LR case of siblings children being red.
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+  if (s != NULL && s -> getColor() == 'B') {
+    node* sL = s -> getL();
+    node* sR = s -> getR();
+
+    //LR case
+      if (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R') {
+	//rotate left over S
+
+	node* sRL = sR -> getL();
+	p -> setL(sR);
+	sR -> setPar(p);
+	
+	sR -> setL(s);
+	s -> setPar(sR);
+	
+	s -> getR(sRL);
+	if (sRL != NULL) {
+	  sRL -> setPar(s);
+	}
+	s -> setColor('R');
+	sR -> setColor('B');
+      }
+   
+      //RL Case
+      else if (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R') {
+
+	node* sLR == sL -> getR();
+	p -> setR(sL);
+	sL -> setPar(p);
+	
+	sL -> setR(s);
+	s -> setPar(sL);
+	
+	s -> setL(sLR);
+	if (sLR != NULL) {
+	  sLR -> setPar(s);
+	}
+	s -> setColor('R');
+	sL -> setColor('B');
+      }
+
+      else {
+	case6(input);
+      }
+    }
+  else {
+    case6(input);
+  }
+  return;
 }
 
 void case6(node* input) { //RR or LL case of siblings children being red.
