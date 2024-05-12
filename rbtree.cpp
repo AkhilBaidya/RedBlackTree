@@ -205,7 +205,59 @@ void rbtree::del(int input){
 	successor = successor -> getR(); //found successor
       }
 
+      d -> setData(successor -> getData());
+
+      //know that there will be nothing to the right of the successor:
+
+      if (successor -> getL() == NULL) {
+
+	if (successor -> getColor() == 'B') {
+	  case1(successor);
+	}
+
+	if (successor == successor -> getPar() -> getL()) {
+	  successor -> getPar() -> setL(NULL);
+	  successor -> setPar(NULL);
+	}
+	else if (successor == successor -> getPar() -> getR()) {
+	  successor -> getPar() -> setR(NULL);
+	  successor -> setPar(NULL);
+	}
+
+	delete successor;
+      }
+
       if (successor -> getL() != NULL) {
+	char color = successor -> getColor();
+	char color2 = successor -> getL() -> getColor();
+	node* replace = successor -> getL();
+	
+	cout << "successor has something to its left" << endl;
+	if (successor == successor -> getPar() -> getR()) {
+	  successor -> getPar() -> setR(successor -> getL());
+	  successor -> getL() -> setColor(successor -> getColor());
+	  successor -> getL() -> setPar(successor -> getPar());
+	}
+	else if (successor == successor -> getPar() -> getL()) {
+	  successor -> getPar() -> setL(successor -> getL());
+	  successor -> getL() -> setColor(successor -> getColor());
+	  successor -> getL() -> setPar(successor -> getPar());
+	}
+	successor -> setPar(NULL);
+	delete successor;
+
+	if (color == 'B' && color2 == 'B') {
+	  case1(replace);
+	}
+       
+      }
+
+
+
+      
+      /*
+      if (successor -> getL() != NULL) {
+	//have to edit the case where the successor movement leads to double blacks.
 	cout << "successor has something to its left" << endl;
 	if (successor == successor -> getPar() -> getR()) {
 	successor -> getPar() -> setR(successor -> getL());
@@ -234,7 +286,7 @@ void rbtree::del(int input){
       successor -> setL(NULL);
       successor -> setR(NULL); //disconnect
       d -> setData(successor -> getData());
-      delete successor;
+      delete successor;*/
     }
 
     else if (d -> getColor() == 'B' && l == NULL && r != NULL && r -> getColor() == 'B') {
@@ -398,6 +450,7 @@ void rbtree::case6(node* input) { //RR or LL case of siblings children being red
     node* sL = s -> getL();
     node* sR = s -> getR();
 
+    cout << "actually do case 6" << endl;
     //LL case
     if (s == p -> getL() && sL != NULL && sL -> getColor() == 'R') {
       //LL rotation on sL
@@ -430,7 +483,7 @@ void rbtree::case5(node* input) { //RL or LR case of siblings children being red
   if (s != NULL && s -> getColor() == 'B') {
     node* sL = s -> getL();
     node* sR = s -> getR();
-
+    cout << "actually do case 5" << endl;
     //LR case
       if (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R') {
 	//rotate left over S
@@ -497,6 +550,7 @@ void rbtree::case4(node* input) { //parent is red and s and s's children are bla
     node* sR = s -> getR();
 
     if (p -> getColor() == 'R' && s -> getColor() == 'B' && sL == NULL && sR == NULL || p -> getColor() == 'R' && s -> getColor() == 'B' && sL -> getColor() == 'B' && sR -> getColor() == 'B') {
+      cout << "actually do case 4" << endl;
       p -> setColor('B');
       s -> setColor('R');
     }
@@ -530,6 +584,7 @@ void rbtree::case3(node* input) { //Sibling is black
   node* sR = s -> getR();
 
   if (s -> getColor() == 'B') {
+    cout << "actually do case 3" << endl;
     //Color s red:
     s -> setColor('R');
 
@@ -548,9 +603,10 @@ void rbtree::case3(node* input) { //Sibling is black
 }
 
 void rbtree::case2(node* input) { //the sibling of x is red
-  cout << "entering case 2" << endl;
+  cout << "entering case 2 for " << input -> getData() << endl;
   //Key players:
   node* p = input -> getPar();
+  cout << "parent" << p -> getData() << endl;
   node* g = p -> getPar();
   node* s;
   if (input == p -> getL()) {
@@ -559,60 +615,73 @@ void rbtree::case2(node* input) { //the sibling of x is red
   else if (input == p -> getR()) {
     s = p -> getL();
   }
-
+  cout << "sibling" << s -> getData() << endl;
+  cout << "right child of parent is " << p -> getR() -> getData() << endl;
+  
   if (s != NULL) {
   node* sL = s -> getL();
   node* sR = s -> getR();
 
   if (s -> getColor() == 'R') {
+    cout << "actually do case 2" << endl;
     //Rotate s over p:
     if (head == p) {
+      cout << "set new head" << endl;
       head = s;
+      s -> setPar(NULL);
     }
 
-    else if (p = g -> getL()) {
+    else if (p == g -> getL()) {
       g -> setL(s);
       s -> setPar(g);
     }
 
-    else if (p = g -> getR()) {
+    else if (p == g -> getR()) {
       g -> setR(s);
       s -> setPar(g);
     }
 
-    if (s = p -> getR()) {
+    if (s == p -> getR()) {
+      cout << "sibling was parents right child" << endl;
       s -> setL(p);
       p -> setPar(s);
+      cout << "set s' left as p and p's parent as s" << endl;
 
       p -> setR(sL);
       if (sL != NULL) {
 	sL -> setPar(p);
       }
+      cout << "set p right as sL and sL parent as p" << endl;
     }
+    
 
-    else if (s = p -> getL()) {
+    else if (s == p -> getL()) {
       s -> setR(p);
       p -> setPar(s);
-
+      cout << "set s right as p and p parent as s" << endl;
+      
       p -> setL(sR);
       if (sR != NULL) {
 	sR -> setPar(p);
       }
+      cout << "set p left as sR and sR parent as p" << endl;
     }
 
+    cout << "printing" << endl;
+    cout << head -> getData() << " " << head -> getL() -> getData() << " "  << head -> getR() -> getData() << endl;
     //Swap s and p's color:
     char color = p -> getColor();
     p -> setColor(s -> getColor());
     s -> setColor(color);
   }
 
-  if (p = s -> getL()) {
+  if (p == s -> getL()) {
     if (sL != NULL && sL -> getColor() == 'B') {
       case3(input);
     } 
   }
 
-  else if (p = s -> getR()) {
+  else if (p == s -> getR()) {
     if (sR != NULL && sR -> getColor() == 'B') {
       case3(input);
     }
@@ -637,6 +706,7 @@ void rbtree::case1(node* input) { //don't do anything if double-black is head
     return;
   }
   else {
+    cout << "move on to case 2" << endl;
     case2(input);
   }
   return;
