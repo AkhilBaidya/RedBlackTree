@@ -179,7 +179,63 @@ void rbtree::del(int input){
 
     //if the node to be deleted has two children
     else if (d -> getL() != NULL && d -> getR() != NULL) {
+
+      //find successor
+
+      node* successor = d -> getL();
+
+      while (successor -> getR() != NULL) {
+	successor = successor -> getR(); //found successor
+      }
+
+      if (successor -> getL() != NULL) {
+	successor -> getPar() -> setR(successor -> getL());
+	successor -> getL() -> setColor(successor -> getColor());
+	successor -> getL() -> setPar(successor -> getPar());
+      }
+
+      else if (successor -> getL() == NULL) {
+	successor -> getPar() -> setR(NULL);
+	successor -> setPar(NULL);
+      }
+
+      d -> setData(successor -> getData());
+      delete successor;
+    }
+
+    else if (d -> getColor() == 'B' && l == NULL && r != NULL && r -> getColor() == 'B') {
       
+      //if doubly black arises from right
+
+      d -> setData(r -> getData());
+      d -> setL(r -> getL());
+      d -> setR(r -> getR());
+      r -> setPar(NULL);
+      r -> setL(NULL);
+      r -> setR(NULL);
+
+      delete r;
+      case1(d);
+      
+    }
+
+    else if (d -> getColor() == 'B' && r == NULL && l != NULL && l -> getColor() == 'B') {
+      //doubly black from left
+
+      d -> setData(l -> getData());
+      d -> setL(l -> getL());
+      d -> setR(l -> getR());
+      l -> setPar(NULL);
+      l -> setL(NULL);
+      l -> setR(NULL);
+
+      delete l;
+      case1(d);
+    }
+
+    //case of black leaf
+    else if (d -> getL() == NULL && d -> getR() == NULL && d -> getColor() == 'B') {
+      case1(d);
     }
   }
   return;
