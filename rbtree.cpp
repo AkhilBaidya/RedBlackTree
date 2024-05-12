@@ -101,19 +101,24 @@ void rbtree::del(int input){
 
   while (current != NULL && current -> getData() != input) { //reach spot to delete
     if (current -> getData() < input) {
-      current = current -> getL();
+      current = current -> getR();
+      //cout << "current val: " << current -> getData();
     }
     else if (current -> getData() > input) {
-      current = current -> getR();
+      current = current -> getL();
+      //cout << "current val (less
     }
   }
 
   //deletion
   if (current != NULL) {
+    cout << "Found thing to delete" << endl;
     node* d = current; //to delete
-
+    node* l = d -> getL();
+    node* r = d -> getR();
     //case red leaf:
     if (d -> getColor() == 'R' && d -> getL() == NULL & d -> getR() == NULL) {
+      cout << "it's a red leaf case" << endl;
       if (d == d -> getPar() -> getL()) {
 	d -> getPar() -> setL(NULL);
 	d -> setPar(NULL);
@@ -132,16 +137,15 @@ void rbtree::del(int input){
     //case just head
 
     else if (d == head && head -> getL() == NULL && head -> getR() == NULL) {
+      cout << "it's the head, just a head case" << endl;
       head = NULL;
       delete d;
     }
 
     //case if node to be deleted has one child and both are not black
-    l = d -> getL();
-    r = d -> getR();
-    
-    else if (d -> getColor() != 'B' && r = NULL && l != NULL && l -> getColor() != 'B' || d -> getColor() != 'B' && l == NULL && r != NULL && r -> getColor() != 'B') {
+    else if (r == NULL && l != NULL && !(d -> getColor() == 'B' && l -> getColor() == 'B') || l == NULL && r != NULL && !(r -> getColor() == 'B' && d -> getColor() == 'B')) {
 
+      cout << "has a child but not doubly black" << endl;
       node* p = d -> getPar();
       node* c;
       if (l != NULL) {
@@ -150,22 +154,33 @@ void rbtree::del(int input){
       else if (r != NULL) {
 	c = r;
       }
+      cout << "set child" << endl;
 
       if (d != head) {
 	d -> setData(c -> getData());
 	d -> setColor('B');
 	d -> setL(c -> getL());
 	d -> setR(c -> getR());
-	
-	if (c == d -> getL()) {
+
+	cout << "edited"<< endl;
+	if (c -> getL() != NULL) {
+	  c -> getL() -> setPar(d);
+	}
+	if (c -> getR() != NULL) {
+	  c -> getR() -> setPar(d);
+	}
+	/*if (c == d -> getL()) {
 	  d -> setL(NULL);
 	}
 	else if (c == d -> getR()) {
 	  d -> setR(NULL);
-	}
+	  }*/
+	cout << "removed d's connections" << endl;
 	c -> setL(NULL);
 	c -> setR(NULL);
+	c -> setPar(NULL);
 	delete c;
+	cout << "deleted c" << endl;
       }
       else if (d == head) {
 	head = c;
@@ -180,31 +195,50 @@ void rbtree::del(int input){
     //if the node to be deleted has two children
     else if (d -> getL() != NULL && d -> getR() != NULL) {
 
+      cout << "has two children" << endl;
       //find successor
 
       node* successor = d -> getL();
 
       while (successor -> getR() != NULL) {
+	cout << "need to recurse right" << endl;
 	successor = successor -> getR(); //found successor
       }
 
       if (successor -> getL() != NULL) {
+	cout << "successor has something to its left" << endl;
+	if (successor == successor -> getPar() -> getR()) {
 	successor -> getPar() -> setR(successor -> getL());
 	successor -> getL() -> setColor(successor -> getColor());
 	successor -> getL() -> setPar(successor -> getPar());
-      }
-
-      else if (successor -> getL() == NULL) {
-	successor -> getPar() -> setR(NULL);
+	}
+	else if (successor == successor -> getPar() -> getL()) {
+	  successor -> getPar() -> setL(successor -> getL());
+	successor -> getL() -> setColor(successor -> getColor());
+	successor -> getL() -> setPar(successor -> getPar());
+	}
 	successor -> setPar(NULL);
       }
 
+      else if (successor -> getL() == NULL) {
+	cout << "remove successor from end rather than replace" << endl;
+	if (successor == successor -> getPar() -> getR()) {
+	successor -> getPar() -> setR(NULL);
+	successor -> setPar(NULL);
+	}
+	else if (successor == successor -> getPar() -> getL()) {
+	  successor -> getPar() -> setL(NULL);
+	  successor -> setPar(NULL);
+	}
+      }
+      successor -> setL(NULL);
+      successor -> setR(NULL); //disconnect
       d -> setData(successor -> getData());
       delete successor;
     }
 
     else if (d -> getColor() == 'B' && l == NULL && r != NULL && r -> getColor() == 'B') {
-      
+      cout << "doubly black from right" << endl;
       //if doubly black arises from right
 
       d -> setData(r -> getData());
@@ -221,7 +255,7 @@ void rbtree::del(int input){
 
     else if (d -> getColor() == 'B' && r == NULL && l != NULL && l -> getColor() == 'B') {
       //doubly black from left
-
+      cout << "doubly black from left" << endl;
       d -> setData(l -> getData());
       d -> setL(l -> getL());
       d -> setR(l -> getR());
@@ -235,8 +269,10 @@ void rbtree::del(int input){
 
     //case of black leaf
     else if (d -> getL() == NULL && d -> getR() == NULL && d -> getColor() == 'B') {
+      cout << "black leaf so reordering then deleting" << endl;
       case1(d); //reorder then delete d
 
+      cout << "reordered, now deleting" << endl;
       if (d == d -> getPar() -> getL()) {
 	d -> getPar() -> setL(NULL);
       }
@@ -249,6 +285,10 @@ void rbtree::del(int input){
       delete d;
     }
   }
+    else {
+      cout << "value not found" << endl;
+    }
+  
   return;
   
   //Standard BST Deletion:
@@ -297,8 +337,6 @@ void rbtree::del(int input){
 
   //If sibling is a right child:
   //sibling takes parent's position.
-  
-  return;
 }
 
 
@@ -343,17 +381,139 @@ void rbtree::recPrint(node* input, int depth) {
 //REORDERING FOR DELETION (for double-black scenarios):
 //The double-black node will be referred to as "x"
 
-void case1(node* input) { //don't do anything if double-black is head
-  if (head == input) {
-    return;
+void rbtree::case6(node* input) { //RR or LL case of siblings children being red.
+  cout << "entering case 6" << endl;
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
   }
-  else {
-    case2(input);
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  if (s != NULL && s -> getColor() == 'B') {
+    node* sL = s -> getL();
+    node* sR = s -> getR();
+
+    //LL case
+    if (s == p -> getL() && sL != NULL && sL -> getColor() == 'R') {
+      //LL rotation on sL
+      rotLL(sL);
+      sL -> setColor('B');
+    }
+
+    //RR case
+    else if (s == p -> getR() && sR != NULL && sR -> getColor() == 'R') {
+      //RR rotation on SR
+      rotRR(sR);
+      sR -> setColor('B');
+    }
   }
   return;
 }
 
-void case2(node* input) { //the sibling of x is red
+void rbtree::case5(node* input) { //RL or LR case of siblings children being red.
+  cout << "entering case 5" << endl;
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+  if (s != NULL && s -> getColor() == 'B') {
+    node* sL = s -> getL();
+    node* sR = s -> getR();
+
+    //LR case
+      if (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R') {
+	//rotate left over S
+
+	node* sRL = sR -> getL();
+	p -> setL(sR);
+	sR -> setPar(p);
+	
+	sR -> setL(s);
+	s -> setPar(sR);
+	
+	s -> setR(sRL);
+	if (sRL != NULL) {
+	  sRL -> setPar(s);
+	}
+	s -> setColor('R');
+	sR -> setColor('B');
+      }
+   
+      //RL Case
+      else if (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R') {
+
+	node* sLR = sL -> getR();
+	p -> setR(sL);
+	sL -> setPar(p);
+	
+	sL -> setR(s);
+	s -> setPar(sL);
+	
+	s -> setL(sLR);
+	if (sLR != NULL) {
+	  sLR -> setPar(s);
+	}
+	s -> setColor('R');
+	sL -> setColor('B');
+      }
+
+      else {
+	case6(input);
+      }
+    }
+  else {
+    case6(input);
+  }
+  return;
+}
+
+
+void rbtree::case4(node* input) { //parent is red and s and s's children are black
+  cout << "entering case 4" << endl;
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  if (s != NULL) {
+    node* sL = s -> getL();
+    node* sR = s -> getR();
+
+    if (p -> getColor() == 'R' && s -> getColor() == 'B' && sL == NULL && sR == NULL || p -> getColor() == 'R' && s -> getColor() == 'B' && sL -> getColor() == 'B' && sR -> getColor() == 'B') {
+      p -> setColor('B');
+      s -> setColor('R');
+    }
+    else {
+      case5(input);
+    }
+
+  }
+  else {
+    case5(input);
+  }
+  return;
+}
+
+
+void rbtree::case3(node* input) { //Sibling is black
+  cout << "entering case 3" << endl;
   //Key players:
   node* p = input -> getPar();
   node* g = p -> getPar();
@@ -367,7 +527,42 @@ void case2(node* input) { //the sibling of x is red
 
   if (s != NULL) {
   node* sL = s -> getL();
-  node sR = s -> getR();
+  node* sR = s -> getR();
+
+  if (s -> getColor() == 'B') {
+    //Color s red:
+    s -> setColor('R');
+
+    //Call case 1 on p:
+    case1(p);  
+  }
+
+  else {
+    case4(input); //else proceed to case 4
+  }
+  }
+  else {
+    case4(input);
+  }
+  return;
+}
+
+void rbtree::case2(node* input) { //the sibling of x is red
+  cout << "entering case 2" << endl;
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  if (s != NULL) {
+  node* sL = s -> getL();
+  node* sR = s -> getR();
 
   if (s -> getColor() == 'R') {
     //Rotate s over p:
@@ -399,7 +594,7 @@ void case2(node* input) { //the sibling of x is red
       s -> setR(p);
       p -> setPar(s);
 
-      p - setL(sR);
+      p -> setL(sR);
       if (sR != NULL) {
 	sR -> setPar(p);
       }
@@ -435,166 +630,17 @@ void case2(node* input) { //the sibling of x is red
   return;
 }
 
-void case3(node* input) { //Sibling is black
-  //Key players:
-  node* p = input -> getPar();
-  node* g = p -> getPar();
-  node* s;
-  if (input == p -> getL()) {
-    s = p -> getR();
-  }
-  else if (input == p -> getR()) {
-    s = p -> getL();
-  }
 
-  if (s != NULL) {
-  node* sL = s -> getL();
-  node sR = s -> getR();
-
-  if (s -> getColor() == 'B') {
-    //Color s red:
-    s -> setColor('R');
-
-    //Call case 1 on p:
-    case1(p);  
-  }
-
-  else {
-    case4(input); //else proceed to case 4
-  }
+void rbtree::case1(node* input) { //don't do anything if double-black is head
+  cout << "entering case 1" << endl;
+  if (head == input) {
+    return;
   }
   else {
-    case4(input);
+    case2(input);
   }
   return;
 }
-
-void case4(node* input) { //parent is red and s and s's children are black
-//Key players:
-  node* p = input -> getPar();
-  node* g = p -> getPar();
-  node* s;
-  if (input == p -> getL()) {
-    s = p -> getR();
-  }
-  else if (input == p -> getR()) {
-    s = p -> getL();
-  }
-
-  if (s != NULL) {
-    node* sL = s -> getL();
-    node* sR = s -> getR();
-
-    if (p -> getColor() == 'R' && s -> getColor() == 'B' && sL == NULL && sR == NULL || p -> getColor() == 'R' && s -> getColor() == 'B' && sL -> getColor() == 'B' && sR -> getColor() == 'B') {
-      p -> setColor('B');
-      s -> setColor('R');
-    }
-    else {
-      case5(input);
-    }
-
-  }
-  else {
-    case5(input);
-  }
-  return;
-}
-
-void case5(node* input) { //RL or LR case of siblings children being red.
-  //Key players:
-  node* p = input -> getPar();
-  node* g = p -> getPar();
-  node* s;
-  if (input == p -> getL()) {
-    s = p -> getR();
-  }
-  else if (input == p -> getR()) {
-    s = p -> getL();
-  }
-  if (s != NULL && s -> getColor() == 'B') {
-    node* sL = s -> getL();
-    node* sR = s -> getR();
-
-    //LR case
-      if (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R') {
-	//rotate left over S
-
-	node* sRL = sR -> getL();
-	p -> setL(sR);
-	sR -> setPar(p);
-	
-	sR -> setL(s);
-	s -> setPar(sR);
-	
-	s -> getR(sRL);
-	if (sRL != NULL) {
-	  sRL -> setPar(s);
-	}
-	s -> setColor('R');
-	sR -> setColor('B');
-      }
-   
-      //RL Case
-      else if (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R') {
-
-	node* sLR == sL -> getR();
-	p -> setR(sL);
-	sL -> setPar(p);
-	
-	sL -> setR(s);
-	s -> setPar(sL);
-	
-	s -> setL(sLR);
-	if (sLR != NULL) {
-	  sLR -> setPar(s);
-	}
-	s -> setColor('R');
-	sL -> setColor('B');
-      }
-
-      else {
-	case6(input);
-      }
-    }
-  else {
-    case6(input);
-  }
-  return;
-}
-
-void case6(node* input) { //RR or LL case of siblings children being red.
-  //Key players:
-  node* p = input -> getPar();
-  node* g = p -> getPar();
-  node* s;
-  if (input == p -> getL()) {
-    s = p -> getR();
-  }
-  else if (input == p -> getR()) {
-    s = p -> getL();
-  }
-
-  if (s != NULL && s -> getColor() == 'B') {
-    node* sL = s -> getL();
-    node* sR = s -> getR();
-
-    //LL case
-    if (s = p -> getL() && sL != NULL && sL -> getColor() == 'R') {
-      //LL rotation on sL
-      rotLL(sL);
-      sL -> setColor('B');
-    }
-
-    //RR case
-    else if (s = p -> getR() && sR != NULL && sR -> getColor() == 'R') {
-      //RR rotation on SR
-      rotRR(sR);
-      sR -> setColor('B');
-    }
-  }
-  return;
-}
-
 
 //REORDERING FOR INSERTION:
 
