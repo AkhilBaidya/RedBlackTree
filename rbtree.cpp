@@ -97,7 +97,41 @@ void rbtree::del(int input){
 
   //chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf
 
+  node* current = head;
 
+  while (current != NULL && current -> getData() != input) { //reach spot to delete
+    if (current -> getData() < input) {
+      current = current -> getL();
+    }
+    else if (current -> getData() > input) {
+      current = current -> getR();
+    }
+  }
+
+  //deletion
+  if (current != NULL) {
+    node* d = current; //to delete
+
+    //case 0c:
+    if (d -> getColor() == 'R' && d -> getL() == NULL & d -> getR() == NULL) {
+      if (d == d -> getPar() -> getL()) {
+	d -> getPar() -> setL(NULL);
+	d -> setPar(NULL);
+
+	delete d;
+      }
+
+      else if (d == d -> getPar() -> getR()) {
+	d -> getPar() -> setR(NULL);
+	d -> setPar(NULL);
+
+	delete d;
+      }
+    }
+
+  }
+  return;
+  
   //Standard BST Deletion:
   
   //Case 0a: If the node to be deleted, d, has two children:
@@ -105,6 +139,8 @@ void rbtree::del(int input){
   //Replace d with x's value and delete x.
   //If x had a left child. Set that left child as the child of the parent of x (take x's position and color).
 
+  
+  
   //Case 0b: If the node to be deleted has one child and it is not the case that both are black:
   //The child, x, becomes the child of d's parent. And it becomes black.
   //Delete d.
