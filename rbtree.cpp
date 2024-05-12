@@ -408,6 +408,36 @@ void case5(node* input) { //RL or LR case of siblings children being red.
 }
 
 void case6(node* input) { //RR or LL case of siblings children being red.
+  //Key players:
+  node* p = input -> getPar();
+  node* g = p -> getPar();
+  node* s;
+  if (input == p -> getL()) {
+    s = p -> getR();
+  }
+  else if (input == p -> getR()) {
+    s = p -> getL();
+  }
+
+  if (s != NULL && s -> getColor() == 'B') {
+    node* sL = s -> getL();
+    node* sR = s -> getR();
+
+    //LL case
+    if (s = p -> getL() && sL != NULL && sL -> getColor() == 'R') {
+      //LL rotation on sL
+      rotLL(sL);
+      sL -> setColor('B');
+    }
+
+    //RR case
+    else if (s = p -> getR() && sR != NULL && sR -> getColor() == 'R') {
+      //RR rotation on SR
+      rotRR(sR);
+      sR -> setColor('B');
+    }
+  }
+  return;
 }
 
 
