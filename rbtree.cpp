@@ -235,7 +235,18 @@ void rbtree::del(int input){
 
     //case of black leaf
     else if (d -> getL() == NULL && d -> getR() == NULL && d -> getColor() == 'B') {
-      case1(d);
+      case1(d); //reorder then delete d
+
+      if (d == d -> getPar() -> getL()) {
+	d -> getPar() -> setL(NULL);
+      }
+
+      else if (d == d -> getPar() -> getR()) {
+	d -> getPar() -> setR(NULL);
+      }
+
+      d -> setPar(NULL);
+      delete d;
     }
   }
   return;
