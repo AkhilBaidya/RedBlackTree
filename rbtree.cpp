@@ -500,7 +500,7 @@ void rbtree::case5(node* input) { //RL or LR case of siblings children being red
     node* sR = s -> getR();
     cout << "actually do case 5" << endl;
     //LR case
-      if (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R') {
+    if (s == p -> getL() && (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R')) {
 	//rotate left over S
 
 	node* sRL = sR -> getL();
@@ -519,7 +519,7 @@ void rbtree::case5(node* input) { //RL or LR case of siblings children being red
       }
    
       //RL Case
-      else if (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R') {
+    else if (s == p -> getR() && (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R')) {
 
 	node* sLR = sL -> getR();
 	p -> setR(sL);
@@ -543,6 +543,7 @@ void rbtree::case5(node* input) { //RL or LR case of siblings children being red
   else {
     case6(input);
   }
+  case6(input);
   return;
 }
 
@@ -598,7 +599,7 @@ void rbtree::case3(node* input) { //Sibling is black
   node* sL = s -> getL();
   node* sR = s -> getR();
 
-  if (s -> getColor() == 'B' && (sL == NULL || sL -> getColor() == 'B') && (sR == NULL || sR -> getColor() == 'B')) {
+  if (p -> getColor() == 'B' && s -> getColor() == 'B' && (sL == NULL || sL -> getColor() == 'B') && (sR == NULL || sR -> getColor() == 'B')) {
     cout << "actually do case 3" << endl;
     //Color s red:
     s -> setColor('R');
