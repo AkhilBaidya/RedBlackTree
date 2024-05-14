@@ -223,31 +223,46 @@ void rbtree::del(int input){
 	  successor -> getPar() -> setR(NULL);
 	  successor -> setPar(NULL);
 	}
-
+	successor -> setL(NULL);
+	successor -> setR(NULL);
 	delete successor;
       }
 
-      if (successor -> getL() != NULL) {
+      else if (successor -> getL() != NULL) {
 	char color = successor -> getColor();
 	char color2 = successor -> getL() -> getColor();
 	node* replace = successor -> getL();
+	//cout << successor -> getPar() -> getR() -> getData();
+	//cout << successor -> getPar() -> getL() -> getData();
+	//cout << successor -> getData();
 	
 	cout << "successor has something to its left" << endl;
 	if (successor == successor -> getPar() -> getR()) {
+	  cout << "to right" << endl;
 	  successor -> getPar() -> setR(successor -> getL());
 	  successor -> getL() -> setColor(successor -> getColor());
 	  successor -> getL() -> setPar(successor -> getPar());
 	}
 	else if (successor == successor -> getPar() -> getL()) {
+	  cout << "to left" << endl;
 	  successor -> getPar() -> setL(successor -> getL());
 	  successor -> getL() -> setColor(successor -> getColor());
 	  successor -> getL() -> setPar(successor -> getPar());
 	}
+	else {
+	  cout << "should not be the case" << endl;
+	}
+	cout << "did it" << endl;
 	successor -> setPar(NULL);
+	successor -> setL(NULL);
+	successor -> setR(NULL);
+	cout << "set everything null" << endl;
 	delete successor;
 
+	cout << "double black check" << endl;
 	if (color == 'B' && color2 == 'B') {
 	  case1(replace);
+	  cout << "did it" << endl;
 	}
        
       }
