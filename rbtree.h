@@ -38,7 +38,7 @@ public:
   void del(int);
 
   //Search in Tree:
-  void search(int);
+  bool search(int);
   
 private:
   //Key Data:
