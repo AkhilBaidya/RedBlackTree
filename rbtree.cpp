@@ -13,7 +13,22 @@ Here are the rules that govern a Red Black Tree (taken from Canvas):
 4) Both children of every red node are black.
 5) Every simple path from a given node to any of its descendant leaves contains the same number of black nodes.
 
+For Insertion:
 Additionally, referred to https://www.geeksforgeeks.org/insertion-in-red-black-tree/, the web article by GeeksforGeeks on Red Black Tree insertion. This provided more clarity as to what triggers rotations in a red black tree (a null or black uncle) or a simple recoloring (a red uncle). Additionally, it provided general steps for the rotations and recoloring.
+
+For Deletion:
+
+  //Referred with https://www.programiz.com/dsa/red-black-tree
+
+  //chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf
+
+//https://www.geeksforgeeks.org/deletion-in-red-black-tree/
+
+//https://www.youtube.com/watch?v=BIflee1rLDY (mr galbraith)
+
+//https://www.youtube.com/watch?v=CTvfzU_uNKE (tushar roy)
+
+
 */
 
 #include <iostream>
@@ -92,10 +107,6 @@ void rbtree::print() {
 
 /*This is the delete function (work in progress)*/
 void rbtree::del(int input){
-
-  //Referred with https://www.programiz.com/dsa/red-black-tree
-
-  //chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf
 
   node* current = head;
 
@@ -406,6 +417,30 @@ void rbtree::del(int input){
   //sibling takes parent's position.
 }
 
+bool rbtree::search(int input) {
+  node* current = head;
+
+  if (head != NULL & head -> getData() == input) {
+    return true;
+  }
+
+  else {
+    while (current -> getData() != input && current != NULL) {
+      if (current -> getData() <= input) {
+	current = current -> getL();
+      }
+      else if (current -> getData() > input) {
+	current = current -> getR();
+      }
+    }
+
+    if (current != NULL) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 //PRIVATE FUNCTIONS: ----------
 
