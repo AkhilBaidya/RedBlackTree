@@ -1,5 +1,5 @@
 //C++ Data Structures: Red Black Tree Class Definitions - Akhil Baidya
-//Submission Date: 5/2/24
+//Submission Date: 5/22/24
 
 /*
 Notes:
@@ -17,18 +17,7 @@ For Insertion:
 Additionally, referred to https://www.geeksforgeeks.org/insertion-in-red-black-tree/, the web article by GeeksforGeeks on Red Black Tree insertion. This provided more clarity as to what triggers rotations in a red black tree (a null or black uncle) or a simple recoloring (a red uncle). Additionally, it provided general steps for the rotations and recoloring.
 
 For Deletion:
-
-  //Referred with https://www.programiz.com/dsa/red-black-tree
-
-  //chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf
-
-//https://www.geeksforgeeks.org/deletion-in-red-black-tree/
-
-//https://www.youtube.com/watch?v=BIflee1rLDY (mr galbraith)
-
-//https://www.youtube.com/watch?v=CTvfzU_uNKE (tushar roy)
-
-
+I studied the process of deletion for red black trees through five sources. I reviewed a tutorial from programiz.com (https://www.programiz.com/dsa/red-black-tree) and a tutorial from GeeksForGeeks (https://www.geeksforgeeks.org/deletion-in-red-black-tree/) which helped me understand to perform standard BST Deletions before the special red black tree deletions that require reordering (these reorderings arise out of "double black" scenarios, where black depth is interfered with, and when a parent node has a single child). For the case scenarios for reordering (the six I have written as functions), I understood the process through a document written by Purdue (chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf), a video by Mr. Galbraith (https://www.youtube.com/watch?v=BIflee1rLDY), and a video by Tushar Roy on Youtube (https://www.youtube.com/watch?v=CTvfzU_uNKE).
 */
 
 #include <iostream>
@@ -105,31 +94,34 @@ void rbtree::print() {
   return;
 }
 
-/*This is the delete function (work in progress)*/
+/*This is the delete function. It takes in an integer, searches for it and deletes it from the tree, calling reordering if necessary*/
 void rbtree::del(int input){
 
+  //Search for the node to delete: 
   node* current = head;
 
   while (current != NULL && current -> getData() != input) { //reach spot to delete
-    if (current -> getData() < input) {
+    if (current -> getData() < input) { //traverse right
       current = current -> getR();
-      //cout << "current val: " << current -> getData();
     }
-    else if (current -> getData() > input) {
+    else if (current -> getData() > input) {//traverse left
       current = current -> getL();
-      //cout << "current val (less
     }
   }
 
-  //deletion
+  //Delete it:
   if (current != NULL) {
-    cout << "Found thing to delete" << endl;
-    node* d = current; //to delete
-    node* l = d -> getL();
-    node* r = d -> getR();
-    //case red leaf:
+    //cout << "Found thing to delete" << endl;
+
+    node* d = current; //node to delete
+    node* l = d -> getL(); //its left
+    node* r = d -> getR(); //its right
+
+    //Case - Node is a Red Leaf:
     if (d -> getColor() == 'R' && d -> getL() == NULL & d -> getR() == NULL) {
-      cout << "it's a red leaf case" << endl;
+      //cout << "it's a red leaf case" << endl;
+
+      //Simply separate node from its parent and delete it:
       if (d == d -> getPar() -> getL()) {
 	d -> getPar() -> setL(NULL);
 	d -> setPar(NULL);
@@ -145,27 +137,26 @@ void rbtree::del(int input){
       }
     }
 
-    //case just head
-
+    //Case - Node is the Head with no Children:
     else if (d == head && head -> getL() == NULL && head -> getR() == NULL) {
-      cout << "it's the head, just a head case" << endl;
+      //cout << "it's the head, just a head case" << endl;
       head = NULL;
       delete d;
     }
 
-    //case if node to be deleted has one child and both are not black
+    //Case - Node has One Child and they are not Both Black:
     else if (r == NULL && l != NULL && !(d -> getColor() == 'B' && l -> getColor() == 'B') || l == NULL && r != NULL && !(r -> getColor() == 'B' && d -> getColor() == 'B')) {
+      //cout << "has a child but not doubly black" << endl;
 
-      cout << "has a child but not doubly black" << endl;
-      node* p = d -> getPar();
-      node* c;
+      node* p = d -> getPar(); //parent
+      node* c; //child
       if (l != NULL) {
 	c = l;
       }
       else if (r != NULL) {
 	c = r;
       }
-      cout << "set child" << endl;
+      //cout << "set child" << endl;
 
       if (d != head) {
 	d -> setData(c -> getData());
@@ -180,12 +171,6 @@ void rbtree::del(int input){
 	if (c -> getR() != NULL) {
 	  c -> getR() -> setPar(d);
 	}
-	/*if (c == d -> getL()) {
-	  d -> setL(NULL);
-	}
-	else if (c == d -> getR()) {
-	  d -> setR(NULL);
-	  }*/
 	cout << "removed d's connections" << endl;
 	c -> setL(NULL);
 	c -> setR(NULL);
@@ -275,44 +260,7 @@ void rbtree::del(int input){
 	  case1(replace);
 	  cout << "did it" << endl;
 	}
-       
       }
-
-
-
-      
-      /*
-      if (successor -> getL() != NULL) {
-	//have to edit the case where the successor movement leads to double blacks.
-	cout << "successor has something to its left" << endl;
-	if (successor == successor -> getPar() -> getR()) {
-	successor -> getPar() -> setR(successor -> getL());
-	successor -> getL() -> setColor(successor -> getColor());
-	successor -> getL() -> setPar(successor -> getPar());
-	}
-	else if (successor == successor -> getPar() -> getL()) {
-	  successor -> getPar() -> setL(successor -> getL());
-	successor -> getL() -> setColor(successor -> getColor());
-	successor -> getL() -> setPar(successor -> getPar());
-	}
-	successor -> setPar(NULL);
-      }
-
-      else if (successor -> getL() == NULL) {
-	cout << "remove successor from end rather than replace" << endl;
-	if (successor == successor -> getPar() -> getR()) {
-	successor -> getPar() -> setR(NULL);
-	successor -> setPar(NULL);
-	}
-	else if (successor == successor -> getPar() -> getL()) {
-	  successor -> getPar() -> setL(NULL);
-	  successor -> setPar(NULL);
-	}
-      }
-      successor -> setL(NULL);
-      successor -> setR(NULL); //disconnect
-      d -> setData(successor -> getData());
-      delete successor;*/
     }
 
     else if (d -> getColor() == 'B' && l == NULL && r != NULL && r -> getColor() == 'B') {
@@ -364,57 +312,10 @@ void rbtree::del(int input){
     }
   }
     else {
-      cout << "value not found" << endl;
+      cout << "Value not found :'(" << endl;
     }
   
   return;
-  
-  //Standard BST Deletion:
-  
-  //Case 0a: If the node to be deleted, d, has two children:
-  //Go left and recursively go right until not possible. Reach node x
-  //Replace d with x's value and delete x.
-  //If x had a left child. Set that left child as the child of the parent of x (take x's position and color).
-
-  
-  
-  //Case 0b: If the node to be deleted has one child and it is not the case that both are black:
-  //The child, x, becomes the child of d's parent. And it becomes black.
-  //Delete d.
-
-  //Case 0c: If node to be deleted is red and is a leaf. Just delete it.
-
-
-  //Black-Black Cases: Else (if both d and x are black (including when x is null) and d has one or no children)
-  //x becomes child of d's parent. Delete d.
-
-  //Now we still look at x. Get the sibling.
-
-  //Do these cases if x is not the head:
-  
-  //Case 1:
-  //If x's sibling (if x is null refer to the previous parent of d's other child) is black and has at least one red child:
-
-  //a) If sib is left child and at least its left child is red (or both are) - LL rotate its left child
-  //b) If sib is left and has a right red child (LR on right child)
-  //c) If sib is right child and at least its right child is red (or both are) - RR rotate on right child
-  //d) If sib is right child and has a left red child (RL rotate on left child)
-  //Do not need to recurse on anything
-  
-  //Case 2:
-  //If x's sibling is black and has no red children:
-
-  //Sibling becomes red.
-  //If Parent is already black, call all the case checks on the parent
-  //Otherwise make the parent black
-
-  //Case 3:
-  //x's sibling is red
-
-  //If sibling is a left child:
-
-  //If sibling is a right child:
-  //sibling takes parent's position.
 }
 
 bool rbtree::search(int input) {
