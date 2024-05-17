@@ -338,22 +338,27 @@ This is the search function, which takes in an integer input and searches whethe
 bool rbtree::search(int input) {
   node* current = head;
 
+  //If the tree is empty:
+  if (head == NULL) {
+    return false; //there is nothing there
+  }
+  
   //If the head already contains the number, return true:
-  if (head != NULL & head -> getData() == input) {
+  else if (head != NULL & head -> getData() == input) {
     return true;
   }
 
   //Else, loop through the tree until arriving at a node which contains the number:
   else {
-    while (current -> getData() != input && current != NULL) {
-      if (current -> getData() <= input) {
+    while (current != NULL && current -> getData() != input) {
+      if (current -> getData() > input) {
 	current = current -> getL();
       }
-      else if (current -> getData() > input) {
+      else if (current -> getData() < input) {
 	current = current -> getR();
       }
     }
-    if (current != NULL) { //If reached a node, then the number is in the tree:
+    if (current != NULL && current -> getData() == input) { //If reached a node, then the number is in the tree:
       return true;
     }
   }
