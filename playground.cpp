@@ -1,8 +1,8 @@
 //C++ Data Structures: Playground for Red Black Tree (how the user interacts with the tree) - Akhil Baidya
-//Submission Date: 5/2/2024
+//Submission Date: 5/22/2024
 
 /*
-Notes: In this program, the user will be able to interact with a Red Black Tree. They can add to the tree (manually or through a file), delete from it, print from it, or quit the program. See README file for instructions. 
+Notes: In this program, the user will be able to interact with a Red Black Tree. They can add to the tree (manually or through a file), delete from it, print from it, search in it, or quit the program. See README file for instructions. 
 */
 
 #include <iostream>
@@ -67,6 +67,24 @@ int main() {
       tree -> print();
     }
 
+    //Searching in tree:
+    else if (!strcmp(command, "SEARCH")) {
+      int find;
+      cout << "What number are you looking for? " << endl;
+      cin >> find; //get number to find
+      bool found = tree -> search(find); //get whether it is in the tree 
+
+      //Print out results:
+      if (found) {
+	cout << "It is in the tree!" << endl;
+      }
+
+      else if (!found) {
+	cout << "It is not in the tree :(" << endl;
+      }
+	
+    }
+    
     //Quitting program:
     else if (!strcmp(command, "QUIT")) {
       editing = false; //end loop
