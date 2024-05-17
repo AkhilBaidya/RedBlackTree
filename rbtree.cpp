@@ -158,28 +158,32 @@ void rbtree::del(int input){
       }
       //cout << "set child" << endl;
 
+      //If the current node "d" is not the head:
       if (d != head) {
-	d -> setData(c -> getData());
+	d -> setData(c -> getData()); //replace d with c (by shifting c's data to d and changing d's color to black)
 	d -> setColor('B');
-	d -> setL(c -> getL());
+	
+	d -> setL(c -> getL()); //move c's children to d
 	d -> setR(c -> getR());
-
-	cout << "edited"<< endl;
+	//cout << "edited"<< endl;
 	if (c -> getL() != NULL) {
 	  c -> getL() -> setPar(d);
 	}
 	if (c -> getR() != NULL) {
 	  c -> getR() -> setPar(d);
 	}
-	cout << "removed d's connections" << endl;
-	c -> setL(NULL);
+	//cout << "removed d's connections" << endl;
+
+	c -> setL(NULL); //delete c
 	c -> setR(NULL);
 	c -> setPar(NULL);
 	delete c;
 	cout << "deleted c" << endl;
       }
+
+      //If the current node "d" wanted to be deleted is the head: 
       else if (d == head) {
-	head = c;
+	head = c; //set the head as c and delete d (make sure the head is black)
 	d -> setL(NULL);
 	d -> setR(NULL);
 	c -> setPar(NULL);
@@ -188,129 +192,139 @@ void rbtree::del(int input){
       }
     }
 
-    //if the node to be deleted has two children
+    //Case - The Node to be Deleted has Two Children:
     else if (d -> getL() != NULL && d -> getR() != NULL) {
+      //cout << "has two children" << endl;
 
-      cout << "has two children" << endl;
-      //find successor
-
+      //Find successor (the largest number smaller than the node deleted):
       node* successor = d -> getL();
-
       while (successor -> getR() != NULL) {
-	cout << "need to recurse right" << endl;
-	successor = successor -> getR(); //found successor
+	//cout << "need to recurse right" << endl;
+	successor = successor -> getR(); //find a larger number if possible
       }
+      d -> setData(successor -> getData()); //move the successor (its data) to d
 
-      d -> setData(successor -> getData());
+      //Know that there will be nothing to the right of the successor:
 
-      //know that there will be nothing to the right of the successor:
-
+      //If there is nothing to the left of the node:
       if (successor -> getL() == NULL) {
-
 	if (successor -> getColor() == 'B') {
-	  case1(successor);
+	  case1(successor); //run check due to doubly black scenario if successor (which is going to be deleted) is black (it is replaced by a null node which is also considered black)
 	}
 
-	if (successor == successor -> getPar() -> getL()) {
+	//Disconnect successor from the tree:
+	if (successor == successor -> getPar() -> getL()) { //its a left child
 	  successor -> getPar() -> setL(NULL);
 	  successor -> setPar(NULL);
 	}
-	else if (successor == successor -> getPar() -> getR()) {
+	else if (successor == successor -> getPar() -> getR()) { //its a right child
 	  successor -> getPar() -> setR(NULL);
 	  successor -> setPar(NULL);
 	}
 	successor -> setL(NULL);
 	successor -> setR(NULL);
-	delete successor;
+	delete successor; //delete it
       }
 
+      //If there is something to the left of the successor:
       else if (successor -> getL() != NULL) {
-	char color = successor -> getColor();
-	char color2 = successor -> getL() -> getColor();
-	node* replace = successor -> getL();
-	//cout << successor -> getPar() -> getR() -> getData();
-	//cout << successor -> getPar() -> getL() -> getData();
-	//cout << successor -> getData();
+	char color = successor -> getColor(); //color of the successor
+	char color2 = successor -> getL() -> getColor(); //color of what is replacing the successor
+	node* replace = successor -> getL(); //get what to replace the successor with 
 	
-	cout << "successor has something to its left" << endl;
-	if (successor == successor -> getPar() -> getR()) {
-	  cout << "to right" << endl;
+	//cout << "successor has something to its left" << endl;
+	//Replace successor with its left child:
+	if (successor == successor -> getPar() -> getR()) { //successor is a right child
+	  //cout << "to right" << endl;
 	  successor -> getPar() -> setR(successor -> getL());
 	  successor -> getL() -> setColor(successor -> getColor());
 	  successor -> getL() -> setPar(successor -> getPar());
 	}
-	else if (successor == successor -> getPar() -> getL()) {
-	  cout << "to left" << endl;
+	else if (successor == successor -> getPar() -> getL()) { //successor is a left child
+	  //cout << "to left" << endl;
 	  successor -> getPar() -> setL(successor -> getL());
 	  successor -> getL() -> setColor(successor -> getColor());
 	  successor -> getL() -> setPar(successor -> getPar());
 	}
 	else {
-	  cout << "should not be the case" << endl;
+	  cout << "Should not be the case" << endl;
 	}
-	cout << "did it" << endl;
+	//cout << "did it" << endl;
+	//Disconnect successor from tree and delete it:
 	successor -> setPar(NULL);
 	successor -> setL(NULL);
 	successor -> setR(NULL);
-	cout << "set everything null" << endl;
+	//cout << "set everything null" << endl;
 	delete successor;
 
-	cout << "double black check" << endl;
+	//cout << "double black check" << endl;
+	//If replaced a black successor with a black child, run check for doubly black scenario:
 	if (color == 'B' && color2 == 'B') {
 	  case1(replace);
-	  cout << "did it" << endl;
+	  //cout << "did it" << endl;
 	}
       }
     }
 
+    //Case (Doubly Black) - Node to be Deleted has one Right Black Child which replace it:
     else if (d -> getColor() == 'B' && l == NULL && r != NULL && r -> getColor() == 'B') {
-      cout << "doubly black from right" << endl;
-      //if doubly black arises from righ
+      //cout << "doubly black from right" << endl;
 
+      //Replace the node with its right child (copy data and left and right children of that child):
       d -> setData(r -> getData());
       d -> setL(r -> getL());
       d -> setR(r -> getR());
+
+      //Delete the right child:
       r -> setPar(NULL);
       r -> setL(NULL);
       r -> setR(NULL);
-
       delete r;
+
+      //Run doubly black check on the node to be deleted:
       case1(d);
-      
     }
 
+    //Case (Doubly Black) - Node to be Deleted has one Left Black Child which replace it:
     else if (d -> getColor() == 'B' && r == NULL && l != NULL && l -> getColor() == 'B') {
-      //doubly black from left
-      cout << "doubly black from left" << endl;
+      //cout << "doubly black from left" << endl;
+
+      //Replace the node with its left child (copy values):
       d -> setData(l -> getData());
       d -> setL(l -> getL());
       d -> setR(l -> getR());
+
+      //Delete the left child:
       l -> setPar(NULL);
       l -> setL(NULL);
       l -> setR(NULL);
-
       delete l;
+
+      //Run doubly black check on the node to be deleted:
       case1(d);
     }
 
-    //case of black leaf
+    //Case (Doubly Black) - Node to be Deleted is a Black Leaf (no children):
     else if (d -> getL() == NULL && d -> getR() == NULL && d -> getColor() == 'B') {
-      cout << "black leaf so reordering then deleting" << endl;
-      case1(d); //reorder then delete d
+      //cout << "black leaf so reordering then deleting" << endl;
+      
+      //Run doubly black check (and reorders) on this node first, and then delete it (effectively replacing it with its null child):
+      case1(d);
 
-      cout << "reordered, now deleting" << endl;
+      //Reordering done, so now delete the node:
+      //cout << "reordered, now deleting" << endl;
       if (d == d -> getPar() -> getL()) {
 	d -> getPar() -> setL(NULL);
       }
-
       else if (d == d -> getPar() -> getR()) {
 	d -> getPar() -> setR(NULL);
       }
-
       d -> setPar(NULL);
       delete d;
     }
   }
+
+  //Case - Value is not in tree:
     else {
       cout << "Value not found :'(" << endl;
     }
@@ -318,13 +332,18 @@ void rbtree::del(int input){
   return;
 }
 
+/*
+This is the search function, which takes in an integer input and searches whether it is in the red black tree (returning a boolean)
+ */
 bool rbtree::search(int input) {
   node* current = head;
 
+  //If the head already contains the number, return true:
   if (head != NULL & head -> getData() == input) {
     return true;
   }
 
+  //Else, loop through the tree until arriving at a node which contains the number:
   else {
     while (current -> getData() != input && current != NULL) {
       if (current -> getData() <= input) {
@@ -334,12 +353,12 @@ bool rbtree::search(int input) {
 	current = current -> getR();
       }
     }
-
-    if (current != NULL) {
+    if (current != NULL) { //If reached a node, then the number is in the tree:
       return true;
     }
   }
 
+  //Otherwise, the node is not in the tree:
   return false;
 }
 
@@ -384,8 +403,11 @@ void rbtree::recPrint(node* input, int depth) {
 //REORDERING FOR DELETION (for double-black scenarios):
 //The double-black node will be referred to as "x"
 
-void rbtree::case6(node* input) { //RR or LL case of siblings children being red.
-  cout << "entering case 6" << endl;
+/*
+case6 checks if the sibling has a red child which is RR or LL relative to the parent of x and reorders/recolors the tree accordingly:
+ */
+void rbtree::case6(node* input) {
+  //cout << "entering case 6" << endl;
   //Key players:
   node* p = input -> getPar();
   node* g = p -> getPar();
@@ -397,21 +419,23 @@ void rbtree::case6(node* input) { //RR or LL case of siblings children being red
     s = p -> getL();
   }
 
+  //The sibling should not be null and should be black:
   if (s != NULL && s -> getColor() == 'B') {
-    node* sL = s -> getL();
+    node* sL = s -> getL(); //get sibling's children
     node* sR = s -> getR();
 
-    cout << "actually do case 6" << endl;
+    //cout << "actually do case 6" << endl;
+
     //LL case
     if (s == p -> getL() && sL != NULL && sL -> getColor() == 'R') {
-      //LL rotation on sL
+      //Do a LL rotation on sL
       rotLL(sL);
       sL -> setColor('B');
     }
 
     //RR case
     else if (s == p -> getR() && sR != NULL && sR -> getColor() == 'R') {
-      //RR rotation on SR
+      //Do a RR rotation on SR
       rotRR(sR);
       sR -> setColor('B');
     }
@@ -419,8 +443,12 @@ void rbtree::case6(node* input) { //RR or LL case of siblings children being red
   return;
 }
 
-void rbtree::case5(node* input) { //RL or LR case of siblings children being red.
-  cout << "entering case 5" << endl;
+/*
+  case5 checks if the sibling has a red child (called if the child is RL or LR relative to the parent of x) and performs required rotations and coloring:
+ */
+void rbtree::case5(node* input) {
+  //cout << "entering case 5" << endl;
+
   //Key players:
   node* p = input -> getPar();
   node* g = p -> getPar();
@@ -431,51 +459,62 @@ void rbtree::case5(node* input) { //RL or LR case of siblings children being red
   else if (input == p -> getR()) {
     s = p -> getL();
   }
+
+  //Sibling should not be null and should be black:
   if (s != NULL && s -> getColor() == 'B') {
-    node* sL = s -> getL();
+    node* sL = s -> getL(); //get sibling's children
     node* sR = s -> getR();
-    cout << "actually do case 5" << endl;
+    //cout << "actually do case 5" << endl;
+
     //LR case
     if (s == p -> getL() && (sL == NULL && sR != NULL && sR -> getColor() == 'R' || sL -> getColor() == 'B' && sR != NULL && sR -> getColor() == 'R')) {
-	//rotate left over S
+      //Rotate sL over S:
+      node* sRL = sR -> getL(); //get sR's left child
 
-	node* sRL = sR -> getL();
-	p -> setL(sR);
-	sR -> setPar(p);
-	
-	sR -> setL(s);
-	s -> setPar(sR);
-	
-	s -> setR(sRL);
-	if (sRL != NULL) {
-	  sRL -> setPar(s);
-	}
-	s -> setColor('R');
-	sR -> setColor('B');
+      p -> setL(sR); //set parent's left as sR
+      sR -> setPar(p);
+      
+      sR -> setL(s); //set sR's left as sibling
+      s -> setPar(sR);
+      
+      s -> setR(sRL);//set sibling's right as sRL
+      if (sRL != NULL) {
+	sRL -> setPar(s);
       }
-   
-      //RL Case
-    else if (s == p -> getR() && (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R')) {
-
-	node* sLR = sL -> getR();
-	p -> setR(sL);
-	sL -> setPar(p);
-	
-	sL -> setR(s);
-	s -> setPar(sL);
-	
-	s -> setL(sLR);
-	if (sLR != NULL) {
-	  sLR -> setPar(s);
-	}
-	s -> setColor('R');
-	sL -> setColor('B');
-      }
-
-      else {
-	case6(input);
-      }
+      
+      //Recolor:
+      s -> setColor('R');
+      sR -> setColor('B');
     }
+
+    //RL Case
+    else if (s == p -> getR() && (sR == NULL && sL != NULL && sL -> getColor() == 'R' || sR -> getColor() == 'B' && sL != NULL && sL -> getColor() == 'R')) {
+      //Rotate sR over S:
+      node* sLR = sL -> getR(); //get right child of sL
+
+      p -> setR(sL); //set parent's right as sL
+      sL -> setPar(p);
+
+      sL -> setR(s); //set sL's right as the sibling
+      s -> setPar(sL);
+
+      s -> setL(sLR); //set sibling's left as sLR
+      if (sLR != NULL) {
+	sLR -> setPar(s);
+      }
+
+      //Recolor:
+      s -> setColor('R');
+      sL -> setColor('B');
+    }
+
+    //Otherwise, move on to the next case:
+    else {
+      case6(input);
+    }
+  }
+
+  //By default, just move on the next scenario:
   else {
     case6(input);
   }
@@ -483,9 +522,12 @@ void rbtree::case5(node* input) { //RL or LR case of siblings children being red
   return;
 }
 
+/*
+  case4 checks if x's parent is red and it has a black sibling with black children:
+ */
+void rbtree::case4(node* input) {
+  //cout << "entering case 4" << endl;
 
-void rbtree::case4(node* input) { //parent is red and s and s's children are black
-  cout << "entering case 4" << endl;
   //Key players:
   node* p = input -> getPar();
   node* g = p -> getPar();
@@ -497,29 +539,37 @@ void rbtree::case4(node* input) { //parent is red and s and s's children are bla
     s = p -> getL();
   }
 
+  //Sibling should not be null:
   if (s != NULL) {
-    node* sL = s -> getL();
+    node* sL = s -> getL(); //get sibling's children
     node* sR = s -> getR();
 
+    //If the parent is red and the sibling is black with black children:
     if (p -> getColor() == 'R' && s -> getColor() == 'B' && (sL == NULL || sL -> getColor() == 'B') && (sR == NULL || sR -> getColor() == 'B')) {
-      cout << "actually do case 4" << endl;
-      p -> setColor('B');
-      s -> setColor('R');
+      //cout << "actually do case 4" << endl;
+      p -> setColor('B'); //set the parent to black
+      s -> setColor('R'); //set the sibling to red (effectively a swapping of colors)
     }
+
+    //Otherwise, move on to the next case:
     else {
       case5(input);
     }
-
   }
+
+  //If there is a null sibling, just move on to the next case:
   else {
     case5(input);
   }
   return;
 }
 
-
+/*
+  case3 recolors the tree if x's sibling is black with black children:
+ */
 void rbtree::case3(node* input) { //Sibling is black
-  cout << "entering case 3" << endl;
+  //cout << "entering case 3" << endl;
+
   //Key players:
   node* p = input -> getPar();
   node* g = p -> getPar();
@@ -531,135 +581,150 @@ void rbtree::case3(node* input) { //Sibling is black
     s = p -> getL();
   }
 
+  //The sibling should not be null:
   if (s != NULL) {
-  node* sL = s -> getL();
-  node* sR = s -> getR();
+    node* sL = s -> getL(); //get sibling's children
+    node* sR = s -> getR();
 
-  if (p -> getColor() == 'B' && s -> getColor() == 'B' && (sL == NULL || sL -> getColor() == 'B') && (sR == NULL || sR -> getColor() == 'B')) {
-    cout << "actually do case 3" << endl;
-    //Color s red:
-    s -> setColor('R');
+    //Reorder if sibling is black with black/null children:
+    if (p -> getColor() == 'B' && s -> getColor() == 'B' && (sL == NULL || sL -> getColor() == 'B') && (sR == NULL || sR -> getColor() == 'B')) {
+      //cout << "actually do case 3" << endl;
 
-    //Call case 1 on p:
-    case1(p);  
+      //Color s red:
+      s -> setColor('R');
+
+      //Call case 1 on p:
+      case1(p);  
+    }
+    else {
+      case4(input); //else proceed to case 4
+    }
   }
-
   else {
-    case4(input); //else proceed to case 4
-  }
-  }
-  else {
-    case4(input);
+    case4(input); //if sibling is null, just move on
   }
   return;
 }
 
-void rbtree::case2(node* input) { //the sibling of x is red
-  cout << "entering case 2 for " << input -> getData() << endl;
+/*
+case2 reorders the red black tree if the sibling of doubly black node x is red and has black children:
+ */
+void rbtree::case2(node* input) {
+  //cout << "entering case 2 for " << input -> getData() << endl;
+
   //Key players:
-  node* p = input -> getPar();
-  cout << "parent" << p -> getData() << endl;
-  node* g = p -> getPar();
-  node* s;
+  node* p = input -> getPar(); //parent
+  //cout << "parent" << p -> getData() << endl;
+  node* g = p -> getPar(); //grandparent
+  node* s; //sibling
   if (input == p -> getL()) {
     s = p -> getR();
   }
   else if (input == p -> getR()) {
     s = p -> getL();
   }
-  cout << "sibling" << s -> getData() << endl;
-  cout << "right child of parent is " << p -> getR() -> getData() << endl;
-  
+  //cout << "sibling" << s -> getData() << endl;
+  //cout << "right child of parent is " << p -> getR() -> getData() << endl;
+
+  //Sibling should not be null for this reordering:
   if (s != NULL) {
-  node* sL = s -> getL();
-  node* sR = s -> getR();
+    node* sL = s -> getL(); //sibling's left child
+    node* sR = s -> getR(); //sibling's right child
 
-  if (s -> getColor() == 'R' && (sL == NULL||sL -> getColor() == 'B') && (sR == NULL||sR -> getColor() == 'B')) {
-    cout << "actually do case 2" << endl;
-    //Rotate s over p:
-    if (head == p) {
-      cout << "set new head" << endl;
-      head = s;
-      s -> setPar(NULL);
-    }
+    //If sibling is red and has black/null children:
+    if (s -> getColor() == 'R' && (sL == NULL||sL -> getColor() == 'B') && (sR == NULL||sR -> getColor() == 'B')) {
+      //cout << "actually do case 2" << endl;
 
-    else if (p == g -> getL()) {
-      g -> setL(s);
-      s -> setPar(g);
-    }
+      //Rotate s over p:
 
-    else if (p == g -> getR()) {
-      g -> setR(s);
-      s -> setPar(g);
-    }
-
-    if (s == p -> getR()) {
-      cout << "sibling was parents right child" << endl;
-      s -> setL(p);
-      p -> setPar(s);
-      cout << "set s' left as p and p's parent as s" << endl;
-
-      p -> setR(sL);
-      if (sL != NULL) {
-	sL -> setPar(p);
+      //If p is the head, then s must become the new head:
+      if (head == p) {
+	//cout << "set new head" << endl;
+	head = s;
+	s -> setPar(NULL);
       }
-      cout << "set p right as sL and sL parent as p" << endl;
-    }
-    
 
-    else if (s == p -> getL()) {
-      s -> setR(p);
-      p -> setPar(s);
-      cout << "set s right as p and p parent as s" << endl;
-      
-      p -> setL(sR);
-      if (sR != NULL) {
-	sR -> setPar(p);
+      //Otherwise, set grandparent's child as the sibling:
+      else if (p == g -> getL()) {
+	g -> setL(s);
+	s -> setPar(g);
       }
-      cout << "set p left as sR and sR parent as p" << endl;
+
+      else if (p == g -> getR()) {
+	g -> setR(s);
+	s -> setPar(g);
+      }
+
+      //If the sibling was a right child, set its left child as the parent:
+      if (s == p -> getR()) {
+	//cout << "sibling was parents right child" << endl;
+	s -> setL(p);
+	p -> setPar(s);
+	//cout << "set s' left as p and p's parent as s" << endl;
+	
+	p -> setR(sL); //the parent's right child becomes the sibling's left child
+	if (sL != NULL) {
+	  sL -> setPar(p);
+	}
+	//cout << "set p right as sL and sL parent as p" << endl;
+      }
+
+      //If the sibling was a left child, set its right child as the parent:
+      else if (s == p -> getL()) {
+	s -> setR(p);
+	p -> setPar(s);
+	//cout << "set s right as p and p parent as s" << endl; 
+
+	p -> setL(sR); //the parent's left child becomes the sibling's right child
+	if (sR != NULL) {
+	  sR -> setPar(p);
+	}
+	//cout << "set p left as sR and sR parent as p" << endl;
+      }
+      //cout << "printing" << endl;
+      //cout << head -> getData() << " " << head -> getL() -> getData() << " "  << head -> getR() -> getData() << endl;
+
+      //Swap s and p's color:
+      char color = p -> getColor();
+      p -> setColor(s -> getColor());
+      s -> setColor(color);
     }
 
-    cout << "printing" << endl;
-    cout << head -> getData() << " " << head -> getL() -> getData() << " "  << head -> getR() -> getData() << endl;
-    //Swap s and p's color:
-    char color = p -> getColor();
-    p -> setColor(s -> getColor());
-    s -> setColor(color);
-  }
+    //Check for more doubly black scenarios (probably just need a call of case3 for any case - for potential future edits):
+    if (p == s -> getL()) {
+      if (sL != NULL && sL -> getColor() == 'B') {
+	case3(input); //check if sL (when moved to parent) is black
+      } 
+    }
 
-  if (p == s -> getL()) {
-    if (sL != NULL && sL -> getColor() == 'B') {
-      case3(input);
-    } 
-  }
+    else if (p == s -> getR()) {
+      if (sR != NULL && sR -> getColor() == 'B') {
+	case3(input); //check if sR (when moved to parent) is black
+      }
+    }
 
-  else if (p == s -> getR()) {
-    if (sR != NULL && sR -> getColor() == 'B') {
+    else { //Otherwise, just move on to the next case:
       case3(input);
     }
-  }
-
-  else {
-    case3(input);
   }
   
- }
-  else {
+  else { //If sibling is null, just move on:
     case3(input);
   }
-
   return;
 }
 
-
-void rbtree::case1(node* input) { //don't do anything if double-black is head
-  cout << "entering case 1" << endl;
+/*
+This case1 function checks if a doubly black node is the head (if it is the head, don't do anything):
+*/
+void rbtree::case1(node* input) {
+  //cout << "entering case 1" << endl;
   if (head == input) {
     return;
   }
   else {
-    cout << "move on to case 2" << endl;
-    case2(input);
+    //cout << "move on to case 2" << endl;
+    case2(input); //moving on to the next case if the node is not the head
   }
   return;
 }
