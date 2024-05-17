@@ -11,7 +11,7 @@ Then run:
 ./finalProgramName
 
 # Interacting with the Program
-There are currently three commands you can input (all case-sensitive for now - use all caps): 
+There are currently five commands you can input (all case-sensitive for now - use all caps): 
 
 1. "ADD"
 The program will tell you to add manually or by a file. To add manually write "man" and to add by file write "file."
@@ -20,10 +20,16 @@ Adding by file will prompt you for a file name. Use the full name (ex. "num.txt"
 
 For better visualization, the tree is printed out after each addition.
 
- 2. "PRINT"
+2. "PRINT"
 This prints out the tree sideways.
 
-3. "QUIT"
+3. "DELETE"
+The program will ask you for a number. Please input a number for this function to work. It will search for that number in the tree and, when first encountering it, will remove it from the tree.
+
+4. "SEARCH" 
+Similarly, the program will ask you for a number (please input a number). It will search for that number in the tree and tell you if it is in the tree.
+
+5. "QUIT"
 This exits the program.
 
 # Sources
